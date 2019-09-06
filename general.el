@@ -35,6 +35,12 @@
 ;; Click [here](https://github.com/hbin/dotfiles-for-emacs) to take a further look.
 (set-frame-font "Hack:pixelsize=12")
 
+;; eshell
+(defalias 'o 'find-file)
+(defalias 'oo 'find-file-other-window)
+(setq eshell-scroll-to-bottom-on-input t)
+(global-set-key (kbd "C-x e") 'eshell)
+
 ;; General Settings
 (setq version-control t)
 (setq kept-old-versions 2)
@@ -95,7 +101,8 @@ scroll-conservatively 10000)
       ["black" "tomato" "PaleGreen2" "gold1"
        "DeepSkyBlue1" "MediumOrchid1" "cyan" "white"])
 (modern-c++-font-lock-global-mode t) ;; modern-c look and feel
-(global-set-key (kbd "C-c m l") 'global-hl-line-mode) ;; highlight the current line
+(global-set-key (kbd "C-c l") 'global-hl-line-mode) ;; toggle highlight the current line
+(global-set-key (kbd "C-c c") 'company-mode) ;; toggle company-mode
 
 ;;
 ;; auto completion related features

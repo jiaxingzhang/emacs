@@ -1,19 +1,29 @@
 ;; Jiaxing Zhang's GNU/Emacs file
 ;; Note: This is for layout management
 
+;; restore the layouts after ediff
+(when (fboundp 'winner-mode) (winner-mode 1))
+(defvar my-ediff-last-windows nil)
+(defun my-store-pre-ediff-winconfig ()
+  (setq my-ediff-last-windows (current-window-configuration)))
+(defun my-restore-pre-ediff-winconfig ()
+  (set-window-configuration my-ediff-last-windows))
+(add-hook 'ediff-before-setup-hook #'my-store-pre-ediff-winconfig)
+(add-hook 'ediff-quit-hook #'my-restore-pre-ediff-winconfig)
+
 ;; rebind window switching to ace-window
 ;; note: we need ace-window for this to work
 (global-set-key (kbd "C-x m") 'ace-window)
 
 (require 'column-marker)
 ;; To undo, C-u C-x n
-(global-set-key [?\C-x ?n] 'column-marker-1)
+(global-set-key (kbd "C-c n") 'column-marker-1) ;; toggle highlight the current column
 ;; To turn off showing the marker, C-u C-x e
-(global-set-key [?\C-x ?e] (lambda () (interactive) (column-marker-2 80)))
+;; (global-set-key [?\C-x ?e] (lambda () (interactive) (column-marker-2 80)))
 ;; Kinda slow if we turn on the hook, so just use C-x e to show 80 column marker
 ;; (add-hook 'c++-mode-hook (lambda () (interactive) (column-marker-1 80)))
 
- (require 'iflipb)
+(require 'iflipb)
 (global-set-key (kbd "M-o") 'iflipb-next-buffer)
 (global-set-key (kbd "M-i") 'iflipb-previous-buffer)
 
@@ -52,7 +62,6 @@ i.e. change right window to bottom, or change bottom window to right."
   :bind (("C-c C-x C-l" . bm-toggle)
          ("C-c C-x C-n" . bm-next)
          ("C-c C-x C-p" . bm-previous)))
-
 
 ;; cycle windows backwards
 (defun prev-window ()
