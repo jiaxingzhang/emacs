@@ -1,3 +1,6 @@
+;; Jiaxing Zhang's GNU/Emacs file
+;; Note: This is for Bible related settings
+
 (add-to-list 'load-path "~/.emacs.rc/local")
 
 ;; Look up CPP reference website.

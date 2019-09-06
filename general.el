@@ -148,11 +148,6 @@ try-expand-whole-kill))
 (setq company-show-numbers t) ;; Number the candidates (use M-1, M-2 etc to select completions).
 (add-hook 'gud-gdb-mode-hook (lambda() (company-mode 0))) ;; Do not use company-mode in gud-gdb mode
 
-;; ??? Do we really need this ???
-(load "~/.emacs.d/bash-completion")
-(require 'bash-completion)
-(bash-completion-setup)
-
 ;; 
 ;; Other utils
 ;;

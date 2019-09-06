@@ -12,6 +12,7 @@
 ;;
 ;; Programming related stuff
 ;;
+(require 'cc-mode)
 
 ;; Look up CPP reference website.
 (defun lookup-cppreference ()

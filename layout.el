@@ -1,6 +1,8 @@
 ;; Jiaxing Zhang's GNU/Emacs file
 ;; Note: This is for layout management
 
+(add-to-list 'load-path "~/.emacs.rc/local")
+
 ;; restore the layouts after ediff
 (when (fboundp 'winner-mode) (winner-mode 1))
 (defvar my-ediff-last-windows nil)
@@ -58,11 +60,11 @@ i.e. change right window to bottom, or change bottom window to right."
 (global-set-key (kbd "C-x C-r") 'layout-restore)
 
 ;; bookmark features
-(use-package bm
-  :bind (("C-c C-x C-l" . bm-toggle)
-         ("C-c C-x C-n" . bm-next)
-         ("C-c C-x C-p" . bm-previous)))
-
+;;;(use-package bm
+;;;  :bind (("C-c C-x C-l" . bm-toggle)
+;;;         ("C-c C-x C-n" . bm-next)
+;;;         ("C-c C-x C-p" . bm-previous)))
+;;;
 ;; cycle windows backwards
 (defun prev-window ()
    (interactive)

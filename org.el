@@ -1,3 +1,6 @@
+;; Jiaxing Zhang's GNU/Emacs file
+;; Note: This is for org-mode related settings
+
 (require 'org)
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-ca" 'org-agenda)

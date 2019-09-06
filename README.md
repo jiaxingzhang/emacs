@@ -11,11 +11,13 @@ c. ace-window
 2. You will need a master emacs file, like .emacs or alike, and put the following inside:
 
 ```elisp
-;; (todo): Add paths to your packages here
+;; (todo): if you have a global path to set
 
 ;; Load other el files
-(load-file "/home/jzhang/.emacs.rc/general.el")
-(load-file "/home/jzhang/.emacs.rc/layout.el")
-(load-file "/home/jzhang/.emacs.rc/tmw.el")
-(load-file "/home/jzhang/.emacs.rc/deprecated.el")
+(load-file "~/.emacs.rc/general.el")
+(load-file "~/.emacs.rc/layout.el")
+(load-file "~/.emacs.rc/prog.el")
+(load-file "~/.emacs.rc/life.el")
+(load-file "~/.emacs.rc/org.el")
+(load-file "~/.emacs.rc/deprecated.el")
 ```
