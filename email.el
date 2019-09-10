@@ -79,20 +79,20 @@
 	     (setq wl-folders-file "~/.emacs.rc/dot.folders"
 
 		   ;; SMTP server for mail posting.
-		   wl-smtp-posting-server "smtp.gmail.com"
+		   wl-smtp-posting-server "smtp.office365.com"
 		   wl-smtp-posting-port 587
-		   wl-smtp-posting-user "jiaxingzhang"
-		   wl-smtp-authenticate-type "plain"
+		   wl-smtp-posting-user "jzhang@mathworks.com"
+		   wl-smtp-authenticate-type "login"
 		   wl-smtp-connection-type 'starttls
-		   wl-from "jiaxingzhang@gmail.com"
-		   wl-local-domain "gmail.com"
+		   wl-from "jzhang@mathworks.com"
+		   wl-local-domain "mathworks.com"
 		   
 		   ;; Do not cache passwords. The cache corrupts server
 		   ;; secrets.
 		   password-cache nil
 		   
-		   elmo-imap4-default-user "jiaxingzhang@gmail.com"
-		   elmo-imap4-default-server "imap.gmail.com"
+		   elmo-imap4-default-user "jzhang@mathworks.com"
+		   elmo-imap4-default-server "outlook.office365.com"
 		   elmo-imap4-default-port 993
 		   elmo-imap4-default-authenticate-type 'clear
 		   elmo-imap4-default-stream-type 'ssl
@@ -106,14 +106,14 @@
 		   elmo-localdir-folder-path "~/.Mail/"
 		   elmo-maildir-folder-path "~/.Mail/"
 
-		   wl-message-id-domain "jiaxingzhang@gmail.com"
-		   wl-from "Jiaxing Zhang <jiaxingzhang@gmail.com>"
+		   wl-message-id-domain "jzhang@mathworks.com"
+		   wl-from "Jiaxing Zhang <jzhang@mathworks.com>"
 ;		   mime-edit-default-signature "~/.emacs.rc/dot.signature"
 		   wl-forward-subject-prefix "Fwd: "
 
 		   wl-default-folder "%INBOX" ;; my main inbox
 		   wl-biff-check-folder-list '("%INBOX") ;; check every 180 seconds
-		   wl-biff-check-interval 180
+		   wl-biff-check-interval 30
 
 		   wl-draft-folder "%Drafts"  ;; store drafts in 'postponed'
 		   wl-trash-folder "%Trash"   ;; put trash in 'trash'
@@ -219,7 +219,7 @@
   (flyspell-mode t)
   (auto-fill-mode t))
 
- (add-hook 'wl-draft-mode-hook 'flyspell-mode)
+(add-hook 'wl-draft-mode-hook 'flyspell-mode)
 
 ;; from a WL-mailinglist post by David Bremner
 
@@ -244,14 +244,3 @@
                               ;; docs for alternatives
 (setq wl-spam-folder ".spam") ;; maildir to store spam
 
-;; List of identities
-;; choose template with C-c C-j
-(setq wl-template-alist
-      '(("personal"
-         (wl-from . "Jiaxing Zhang <jiaxingzhang@gmail.com>")
-         ("From" . wl-from))
-        ("business"
-         (wl-from . "Jiaxing Zhang <jzhang@mathworks.com>")
-         ("From" . wl-from)
-         ("Organization" . "The MathWorks Inc."))
-        ))

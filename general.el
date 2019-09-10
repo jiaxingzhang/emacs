@@ -10,6 +10,9 @@
 
 (setq backup-directory-alist `(("." . "~/.emacs_save")))
 
+;; theme
+(load-theme 'dracula t)
+
 ;; start up size
 (if (display-graphic-p)
     (progn
@@ -35,11 +38,22 @@
 ;; Click [here](https://github.com/hbin/dotfiles-for-emacs) to take a further look.
 (set-frame-font "Hack:pixelsize=12")
 
-;; eshell
-(defalias 'o 'find-file)
-(defalias 'oo 'find-file-other-window)
-(setq eshell-scroll-to-bottom-on-input t)
-(global-set-key (kbd "C-x e") 'eshell)
+;; eshell (are we ready to fully dump eshell?)
+;; (defalias 'o 'find-file)
+;; (defalias 'oo 'find-file-other-window)
+;; (setq eshell-scroll-to-bottom-on-input t)
+
+(setq explicit-shell-file-name "/usr/bin/fish")
+
+(defun my/term ()
+  "My personal term command."
+  (interactive)
+  (set-buffer (make-term "terminal" explicit-shell-file-name))
+  (term-mode)
+  (term-char-mode)
+  (switch-to-buffer "*terminal*"))
+
+(define-key global-map (kbd "C-x e") (lambda () (interactive) (term explicit-shell-file-name)))
 
 ;; General Settings
 (setq version-control t)
@@ -93,6 +107,7 @@ scroll-conservatively 10000)
 (setq kill-ring-max 200)
 (setq apropos-do-all t)
 (setq-default ispell-program-name "aspell")
+(savehist-mode 1)
 (put 'narrow-to-region 'disabled nil)
 ;; set the clipboard
 (setq x-select-enable-clipboard t)
@@ -102,7 +117,7 @@ scroll-conservatively 10000)
        "DeepSkyBlue1" "MediumOrchid1" "cyan" "white"])
 ;;; (modern-c++-font-lock-global-mode t) ;; modern-c look and feel
 (global-set-key (kbd "C-c l") 'global-hl-line-mode) ;; toggle highlight the current line
-(global-set-key (kbd "C-c p") 'company-mode) ;; toggle company-mode
+(global-set-key (kbd "C-c c p") 'company-mode) ;; toggle company-mode
 
 ;;
 ;; auto completion related features
@@ -143,11 +158,11 @@ try-expand-whole-kill))
 ;; sudo apt-get install clang-7 lldb-7 lld-7 --fix-missing
 ;; sudo ln -s /usr/bin/clang-7 /usr/bin/clang
 (require 'company-tabnine)
-;;; (add-to-list 'company-backends #'company-tabnine)
+(add-to-list 'company-backends #'company-tabnine)
 (setq company-idle-delay 0) ;; Trigger completion immediately.
 (setq company-show-numbers t) ;; Number the candidates (use M-1, M-2 etc to select completions).
 (add-hook 'gud-gdb-mode-hook (lambda() (company-mode 0))) ;; Do not use company-mode in gud-gdb mode
-
+(add-hook 'wl-summary-mode-hook (lambda() (company-mode 0))) ;; too slow to have this on
 ;; 
 ;; Other utils
 ;;
