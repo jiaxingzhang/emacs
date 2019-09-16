@@ -43,17 +43,15 @@
 ;; (defalias 'oo 'find-file-other-window)
 ;; (setq eshell-scroll-to-bottom-on-input t)
 
-(setq explicit-shell-file-name "/usr/bin/fish")
-
-(defun my/term ()
-  "My personal term command."
-  (interactive)
-  (set-buffer (make-term "terminal" explicit-shell-file-name))
-  (term-mode)
-  (term-char-mode)
-  (switch-to-buffer "*terminal*"))
-
-(define-key global-map (kbd "C-x e") (lambda () (interactive) (term explicit-shell-file-name)))
+;; (setq explicit-shell-file-name "/usr/bin/fish")
+(require 'use-package)
+(use-package shell-pop
+  :bind (("C-t" . shell-pop))
+  :config
+  (setq shell-pop-shell-type (quote ("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
+  (setq shell-pop-term-shell "/usr/local/bin/fish")
+  ;; need to do this manually or not picked up by `shell-pop'
+  (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type))
 
 ;; General Settings
 (setq version-control t)
