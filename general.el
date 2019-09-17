@@ -19,7 +19,7 @@
 
 ;; neotree
 (require 'neotree)
-(global-set-key (kbd "C-x C-a") 'neotree-toggle)
+(global-set-key (kbd "C-x C-e") 'neotree-toggle)
 
 ;; start up size
 (if (display-graphic-p)
