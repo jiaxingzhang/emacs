@@ -10,6 +10,10 @@
 
 (setq backup-directory-alist `(("." . "~/.emacs_save")))
 
+;; always start as a server
+(server-start)
+
+;; theme
 (load-theme 'dracula t)
 
 ;; icons
