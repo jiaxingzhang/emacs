@@ -28,8 +28,24 @@
 ;; (add-hook 'c++-mode-hook (lambda () (interactive) (column-marker-1 80)))
 
 (require 'iflipb)
+(defun my-iflipb-buffer-list ()
+  "Returns list of buffers whose major-mode is the same as current buffer's one."
+  (let ((cur-buf-list (buffer-list (selected-frame)))
+        (same-major-mode-buflist nil)
+        (currbuf-major-mode
+         (buffer-local-value 'major-mode (current-buffer))))
+     (dolist (buffer cur-buf-list)
+      (if (eq (buffer-local-value 'major-mode buffer) currbuf-major-mode)
+          (add-to-list 'same-major-mode-buflist buffer)))
+     (nreverse same-major-mode-buflist)))
+(setq iflipb-buffer-list-function 'my-iflipb-buffer-list)
+(setq iflipb-wrap-around t)
+(setq iflipb-ignore-buffers (list "^[*]"))
 (global-set-key (kbd "M-o") 'iflipb-next-buffer)
 (global-set-key (kbd "M-i") 'iflipb-previous-buffer)
+
+(global-set-key (kbd "C-<tab>") 'next-buffer)
+(global-set-key (kbd "C-S-<tab>") 'previous-buffer)
 
 (defun window-toggle-split-direction ()
   "Switch window split from horizontally to vertically, or vice versa.
