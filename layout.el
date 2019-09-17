@@ -12,6 +12,8 @@
   (set-window-configuration my-ediff-last-windows))
 (add-hook 'ediff-before-setup-hook #'my-store-pre-ediff-winconfig)
 (add-hook 'ediff-quit-hook #'my-restore-pre-ediff-winconfig)
+(global-set-key (kbd "C-x C-a C-h") 'winner-undo)
+(global-set-key (kbd "C-x C-a C-l") 'winner-redo)
 
 ;; rebind window switching to ace-window
 ;; note: we need ace-window for this to work
@@ -55,9 +57,9 @@ i.e. change right window to bottom, or change bottom window to right."
                 (set-window-buffer (windmove-find-other-window neighbour-dir) other-buf))))))))
 (global-set-key (kbd "C-x |") 'window-toggle-split-direction)
 
-(require 'layout-restore)
-(global-set-key (kbd "C-x C-l") 'layout-save-current)
-(global-set-key (kbd "C-x C-r") 'layout-restore)
+;(require 'layout-restore)
+;; (global-set-key (kbd "C-x C-l") 'layout-save-current)
+;; (global-set-key (kbd "C-x C-r") 'layout-restore)
 
 ;; bookmark features
 ;;;(use-package bm
