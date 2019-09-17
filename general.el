@@ -13,6 +13,14 @@
 ;; theme
 (load-theme 'dracula t)
 
+;; icons
+(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+(setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+
+;; neotree
+(require 'neotree)
+(global-set-key (kbd "C-x C-a") 'neotree-toggle)
+
 ;; start up size
 (if (display-graphic-p)
     (progn
