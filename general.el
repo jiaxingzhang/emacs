@@ -10,7 +10,6 @@
 
 (setq backup-directory-alist `(("." . "~/.emacs_save")))
 
-;; theme
 (load-theme 'dracula t)
 
 ;; icons
@@ -19,7 +18,7 @@
 
 ;; neotree
 (require 'neotree)
-(global-set-key (kbd "C-x C-e") 'neotree-toggle)
+(global-set-key (kbd "C-x t") 'neotree-toggle)
 
 ;; start up size
 (if (display-graphic-p)
