@@ -3,6 +3,35 @@
 
 (add-to-list 'load-path "~/.emacs.rc/local")
 
+(require 'tabbar)
+; turn on the tabbar
+(tabbar-mode t)
+; define all tabs to be one of 3 possible groups: “Emacs Buffer”, “Dired”,
+;“User Buffer”.
+
+(defun tabbar-buffer-groups ()
+  "Return the list of group names the current buffer belongs to.
+This function is a custom function for tabbar-mode's tabbar-buffer-groups.
+This function group all buffers into 3 groups:
+Those Dired, those user buffer, and those emacs buffer.
+Emacs buffer are those starting with “*”."
+  (list
+   (cond
+    ((string-equal "*" (substring (buffer-name) 0 1))
+     "Emacs Buffer"
+     )
+    ((eq major-mode 'dired-mode)
+     "Dired"
+     )
+    (t
+     "User Buffer"
+     )
+    ))) 
+(setq tabbar-buffer-groups-function 'tabbar-buffer-groups)
+(global-set-key (kbd "M-o") 'tabbar-forward)
+(global-set-key (kbd "M-i") 'tabbar-backward)
+
+
 ;; restore the layouts after ediff
 (when (fboundp 'winner-mode) (winner-mode 1))
 (defvar my-ediff-last-windows nil)
@@ -27,22 +56,22 @@
 ;; Kinda slow if we turn on the hook, so just use C-x e to show 80 column marker
 ;; (add-hook 'c++-mode-hook (lambda () (interactive) (column-marker-1 80)))
 
-(require 'iflipb)
-(defun my-iflipb-buffer-list ()
-  "Returns list of buffers whose major-mode is the same as current buffer's one."
-  (let ((cur-buf-list (buffer-list (selected-frame)))
-        (same-major-mode-buflist nil)
-        (currbuf-major-mode
-         (buffer-local-value 'major-mode (current-buffer))))
-     (dolist (buffer cur-buf-list)
-      (if (eq (buffer-local-value 'major-mode buffer) currbuf-major-mode)
-          (add-to-list 'same-major-mode-buflist buffer)))
-     (nreverse same-major-mode-buflist)))
-(setq iflipb-buffer-list-function 'my-iflipb-buffer-list)
-(setq iflipb-wrap-around t)
-(setq iflipb-ignore-buffers (list "^[*]"))
-(global-set-key (kbd "M-o") 'iflipb-next-buffer)
-(global-set-key (kbd "M-i") 'iflipb-previous-buffer)
+; (require 'iflipb)
+; (defun my-iflipb-buffer-list ()
+;   "Returns list of buffers whose major-mode is the same as current buffer's one."
+;   (let ((cur-buf-list (buffer-list (selected-frame)))
+;         (same-major-mode-buflist nil)
+;         (currbuf-major-mode
+;          (buffer-local-value 'major-mode (current-buffer))))
+;      (dolist (buffer cur-buf-list)
+;       (if (eq (buffer-local-value 'major-mode buffer) currbuf-major-mode)
+;           (add-to-list 'same-major-mode-buflist buffer)))
+;      (nreverse same-major-mode-buflist)))
+; (setq iflipb-buffer-list-function 'my-iflipb-buffer-list)
+; (setq iflipb-wrap-around t)
+; (setq iflipb-ignore-buffers (list "^[*]"))
+; (global-set-key (kbd "M-o") 'iflipb-next-buffer)
+; (global-set-key (kbd "M-i") 'iflipb-previous-buffer)
 
 (global-set-key (kbd "C-<tab>") 'next-buffer)
 (global-set-key (kbd "C-S-<tab>") 'previous-buffer)

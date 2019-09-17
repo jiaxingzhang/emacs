@@ -257,3 +257,4 @@ searches all buffers."
  '(progn
    (global-set-key (kbd "C-+") 'hs-toggle-hiding)))
 (define-key nxml-mode-map (kbd "C-c h") 'hs-toggle-hiding)
+
