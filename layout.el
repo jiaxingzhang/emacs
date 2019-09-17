@@ -31,6 +31,12 @@ Emacs buffer are those starting with “*”."
 (global-set-key (kbd "M-o") 'tabbar-forward)
 (global-set-key (kbd "M-i") 'tabbar-backward)
 
+(setq tabbar-ruler-global-tabbar t)    ; get tabbar
+(setq tabbar-ruler-global-ruler nil)     ; get global ruler
+(setq tabbar-ruler-popup-menu t)       ; get popup menu.
+(setq tabbar-ruler-popup-toolbar t)    ; get popup toolbar
+(setq tabbar-ruler-popup-scrollbar t)  ; show scroll-bar on mouse-move
+(require 'tabbar-ruler)
 
 ;; restore the layouts after ediff
 (when (fboundp 'winner-mode) (winner-mode 1))
