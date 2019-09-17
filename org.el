@@ -23,3 +23,11 @@
 ;; flyspell-mode to ignore in code block
 (add-to-list 'ispell-skip-region-alist '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:"))
 (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
+
+(setq org-log-done 'time)
+(setq org-log-done 'note)
+
+(setq org-agenda-files (list "~/notes/org/work.org"
+                             "~/notes/org/home.org" 
+                             "~/notes/org/ministry.org"
+			     "~/notes/org/dt.org"))

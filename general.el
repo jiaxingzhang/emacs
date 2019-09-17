@@ -14,7 +14,12 @@
 (server-start)
 
 ;; theme
-(load-theme 'dracula t)
+(cond ((eq system-type 'darwin)
+       (load-theme 'zerodark t)
+       )
+      ((eq system-type 'gnu/linux)
+       (load-theme 'dracula t)
+       ))
 
 ;; icons
 (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
