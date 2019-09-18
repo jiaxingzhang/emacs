@@ -21,6 +21,9 @@
        (load-theme 'dracula t)
        ))
 
+(require 'powerline)
+(powerline-default-theme)
+
 ;; icons
 (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
 (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
