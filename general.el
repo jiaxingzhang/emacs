@@ -55,9 +55,9 @@
 (set-frame-font "Hack:pixelsize=12")
 
 ;; eshell (are we ready to fully dump eshell?)
-;; (defalias 'o 'find-file)
-;; (defalias 'oo 'find-file-other-window)
-;; (setq eshell-scroll-to-bottom-on-input t)
+(defalias 'o 'find-file)
+(defalias 'oo 'find-file-other-window)
+(setq eshell-scroll-to-bottom-on-input t)
 
 ;; (setq explicit-shell-file-name "/usr/bin/fish")
 (require 'use-package)
@@ -67,7 +67,9 @@
   (setq shell-pop-shell-type (quote ("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
   (setq shell-pop-term-shell "/usr/local/bin/fish")
   ;; need to do this manually or not picked up by `shell-pop'
-  (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type))
+  (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
+  (setq shell-pop-autocd-to-working-dir nil) ; don't auto-cd 
+  )
 
 ;; General Settings
 (setq version-control t)
