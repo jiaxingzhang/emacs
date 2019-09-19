@@ -3,41 +3,6 @@
 
 (add-to-list 'load-path "~/.emacs.rc/local")
 
-(require 'tabbar)
-; turn on the tabbar
-(tabbar-mode t)
-; define all tabs to be one of 3 possible groups: “Emacs Buffer”, “Dired”,
-;“User Buffer”.
-
-(defun tabbar-buffer-groups ()
-  "Return the list of group names the current buffer belongs to.
-This function is a custom function for tabbar-mode's tabbar-buffer-groups.
-This function group all buffers into 3 groups:
-Those Dired, those user buffer, and those emacs buffer.
-Emacs buffer are those starting with “*”."
-  (list
-   (cond
-    ((string-equal "*" (substring (buffer-name) 0 1))
-     "Emacs Buffer"
-     )
-    ((eq major-mode 'dired-mode)
-     "Dired"
-     )
-    (t
-     "User Buffer"
-     )
-    ))) 
-(setq tabbar-buffer-groups-function 'tabbar-buffer-groups)
-(global-set-key (kbd "M-o") 'tabbar-forward)
-(global-set-key (kbd "M-i") 'tabbar-backward)
-
-(setq tabbar-ruler-global-tabbar t)    ; get tabbar
-(setq tabbar-ruler-global-ruler nil)     ; get global ruler
-(setq tabbar-ruler-popup-menu t)       ; get popup menu.
-(setq tabbar-ruler-popup-toolbar t)    ; get popup toolbar
-(setq tabbar-ruler-popup-scrollbar t)  ; show scroll-bar on mouse-move
-(require 'tabbar-ruler)
-
 ;; restore the layouts after ediff
 (when (fboundp 'winner-mode) (winner-mode 1))
 (defvar my-ediff-last-windows nil)
@@ -151,3 +116,5 @@ i.e. change right window to bottom, or change bottom window to right."
    (current-buffer)))
 (global-set-key [?\C-x ?d] 'toggle-window-dedicated)
 
+;; add the tabbar stuff
+(load-file "/home/jzhang/.emacs.rc/tabbar.el")
