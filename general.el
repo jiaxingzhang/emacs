@@ -182,6 +182,7 @@ try-expand-whole-kill))
 (setq company-show-numbers t) ;; Number the candidates (use M-1, M-2 etc to select completions).
 (add-hook 'gud-gdb-mode-hook (lambda() (company-mode 0))) ;; Do not use company-mode in gud-gdb mode
 (add-hook 'wl-summary-mode-hook (lambda() (company-mode 0))) ;; too slow to have this on
+
 ;; 
 ;; Other utils
 ;;
@@ -262,4 +263,3 @@ searches all buffers."
  '(progn
    (global-set-key (kbd "C-+") 'hs-toggle-hiding)))
 (define-key nxml-mode-map (kbd "C-c h") 'hs-toggle-hiding)
-
