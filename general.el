@@ -28,6 +28,9 @@
 (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
 (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
 
+(global-set-key (kbd "C-q") 'remember-other-frame)
+(global-set-key (kbd "C-c q") 'remember-notes)
+
 ;; neotree
 (require 'neotree)
 (global-set-key (kbd "C-x t") 'neotree-toggle)
