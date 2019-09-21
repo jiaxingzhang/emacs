@@ -117,4 +117,4 @@ i.e. change right window to bottom, or change bottom window to right."
 (global-set-key [?\C-x ?d] 'toggle-window-dedicated)
 
 ;; add the tabbar stuff
-(load-file "/home/jzhang/.emacs.rc/tabbar.el")
+(load-file "~/.emacs.rc/tabbar.el")
