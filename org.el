@@ -31,3 +31,16 @@
                              "~/notes/org/home.org" 
                              "~/notes/org/ministry.org"
 			     "~/notes/org/dt.org"))
+
+
+(setq org-capture-templates
+      '(("t" "Todo" entry (file+headline "~/notes/org/gtd.org" "Tasks")
+         "* TODO %?\n  %i\n  %a")
+        ("s" "Scratch" entry (file+datetree "~/notes/org/scratch.org")
+         "* %?\nEntered on %U\n  %i\n  %a")))
+
+(define-key global-map "\C-ct"
+  (lambda () (interactive) (org-capture nil "t")))
+
+(define-key global-map "\C-cs"
+  (lambda () (interactive) (org-capture nil "s")))
