@@ -15,7 +15,7 @@
 
 ;; theme
 (cond ((eq system-type 'darwin)
-       (load-theme 'zerodark t)
+;       (load-theme 'spacemacs-light t)
        )
       ((eq system-type 'gnu/linux)
        (load-theme 'dracula t)
@@ -163,17 +163,17 @@ try-complete-lisp-symbol-partially
 try-expand-whole-kill))
 
 ;; 2 - Helm
-(require 'helm-config)
-(require 'helm-ag)
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
-(global-set-key (kbd "C-x b") 'helm-mini)
-(global-set-key (kbd "C-x C-y") 'helm-do-ag)
-(global-set-key (kbd "C-x f") 'helm-ag-this-file)
-; (global-set-key (kbd "M-x") #'helm-M-x) ; a bit too much I think
-(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to do persistent action
-(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
-(define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
-(helm-mode 1)
+;; (require 'helm-config)
+;; (require 'helm-ag)
+;; (global-set-key (kbd "C-x C-f") 'helm-find-files)
+;; (global-set-key (kbd "C-x b") 'helm-mini)
+;; (global-set-key (kbd "C-x C-y") 'helm-do-ag)
+;; (global-set-key (kbd "C-x f") 'helm-ag-this-file)
+;; ; (global-set-key (kbd "M-x") #'helm-M-x) ; a bit too much I think
+;; (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to do persistent action
+;; (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+;; (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+;; (helm-mode 1)
 
 ;; 3 - TabNine: AI based completion
 ;; this requires clang to be installed:
@@ -266,3 +266,21 @@ searches all buffers."
  '(progn
    (global-set-key (kbd "C-+") 'hs-toggle-hiding)))
 (define-key nxml-mode-map (kbd "C-c h") 'hs-toggle-hiding)
+
+(ivy-mode 1)
+(setq ivy-use-virtual-buffers t)
+(setq ivy-height 20)
+(setq ivy-count-format "(%d/%d) ")
+(global-set-key (kbd "C-s") 'swiper-isearch-thing-at-point)
+(global-set-key (kbd "C-x C-y") 'counsel-ag)
+(global-set-key (kbd "C-x B") 'counsel-recentf)
+(global-set-key (kbd "C-x Y") 'counsel-yank-pop)
+(global-set-key (kbd "M-[") 'avy-goto-line)
+(global-set-key (kbd "M-]") 'avy-goto-char-timer)
+
+(defun ivy-icomplete (f &rest r)
+  (icomplete-mode -1)
+  (unwind-protect
+       (apply f r)
+    (icomplete-mode 1)))
+(advice-add 'ivy-read :around #'ivy-icomplete)
