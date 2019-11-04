@@ -10,8 +10,8 @@
   (setq my-ediff-last-windows (current-window-configuration)))
 (defun my-restore-pre-ediff-winconfig ()
   (set-window-configuration my-ediff-last-windows))
-(add-hook 'ediff-before-setup-hook #'my-store-pre-ediff-winconfig)
-(add-hook 'ediff-quit-hook #'my-restore-pre-ediff-winconfig)
+;; (add-hook 'ediff-before-setup-hook #'my-store-pre-ediff-winconfig)
+;; (add-hook 'ediff-quit-hook #'my-restore-pre-ediff-winconfig)
 (global-set-key (kbd "C-x C-a C-h") 'winner-undo)
 (global-set-key (kbd "C-x C-a C-l") 'winner-redo)
 
