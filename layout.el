@@ -118,3 +118,7 @@ i.e. change right window to bottom, or change bottom window to right."
 
 ;; add the tabbar stuff
 (load-file "/home/jzhang/.emacs.rc/tabbar.el")
+
+(require 'window-number)
+(window-number-mode)
+(window-number-meta-mode)
