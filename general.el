@@ -162,7 +162,8 @@ try-complete-lisp-symbol
 try-complete-lisp-symbol-partially
 try-expand-whole-kill))
 
-;; 2 - Helm
+;; helm seems to interfere with gdb-gud mode? 
+;; 2 - Helm 
 ;; (require 'helm-config)
 ;; (require 'helm-ag)
 ;; (global-set-key (kbd "C-x C-f") 'helm-find-files)
@@ -174,6 +175,23 @@ try-expand-whole-kill))
 ;; (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
 ;; (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
 ;; (helm-mode 1)
+
+;; ivy-mode as a replacement for helm
+(ivy-mode 1)
+(setq ivy-use-virtual-buffers t)
+(setq ivy-height 20)
+(setq ivy-count-format "(%d/%d) ")
+(global-set-key (kbd "C-x C-y") 'counsel-ag)
+(global-set-key (kbd "C-x B") 'counsel-recentf)
+(global-set-key (kbd "C-x Y") 'counsel-yank-pop)
+(global-set-key (kbd "C-i") 'avy-goto-char-timer)
+(global-set-key (kbd "C-o") 'avy-goto-line)
+(defun ivy-icomplete (f &rest r)
+  (icomplete-mode -1)
+  (unwind-protect
+       (apply f r)
+    (icomplete-mode 1)))
+(advice-add 'ivy-read :around #'ivy-icomplete)
 
 ;; 3 - TabNine: AI based completion
 ;; this requires clang to be installed:
@@ -267,19 +285,3 @@ searches all buffers."
    (global-set-key (kbd "C-+") 'hs-toggle-hiding)))
 (define-key nxml-mode-map (kbd "C-c h") 'hs-toggle-hiding)
 
-(ivy-mode 1)
-(setq ivy-use-virtual-buffers t)
-(setq ivy-height 20)
-(setq ivy-count-format "(%d/%d) ")
-(global-set-key (kbd "C-x C-y") 'counsel-ag)
-(global-set-key (kbd "C-x B") 'counsel-recentf)
-(global-set-key (kbd "C-x Y") 'counsel-yank-pop)
-(global-set-key (kbd "M-[") 'avy-goto-line)
-(global-set-key (kbd "M-]") 'avy-goto-char-timer)
-
-(defun ivy-icomplete (f &rest r)
-  (icomplete-mode -1)
-  (unwind-protect
-       (apply f r)
-    (icomplete-mode 1)))
-(advice-add 'ivy-read :around #'ivy-icomplete)
