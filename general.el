@@ -15,14 +15,14 @@
 
 ;; theme
 (cond ((eq system-type 'darwin)
-;       (load-theme 'spacemacs-light t)
+       ;; (load-theme 'spacemacs-light t) 
+       ;; this don't work well in Linux terminal
+       (require 'powerline)
+       (powerline-default-theme)
        )
       ((eq system-type 'gnu/linux)
-       (load-theme 'dracula t)
+       ;; (load-theme 'dracula t)
        ))
-
-(require 'powerline)
-(powerline-default-theme)
 
 ;; icons
 (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
@@ -139,7 +139,7 @@ scroll-conservatively 10000)
        "DeepSkyBlue1" "MediumOrchid1" "cyan" "white"])
 ;;; (modern-c++-font-lock-global-mode t) ;; modern-c look and feel
 (global-set-key (kbd "C-c l") 'global-hl-line-mode) ;; toggle highlight the current line
-(global-set-key (kbd "C-c c p") 'company-mode) ;; toggle company-mode
+(global-set-key (kbd "C-c z") 'company-mode) ;; toggle company-mode
 
 ;;
 ;; auto completion related features
@@ -271,7 +271,6 @@ searches all buffers."
 (setq ivy-use-virtual-buffers t)
 (setq ivy-height 20)
 (setq ivy-count-format "(%d/%d) ")
-(global-set-key (kbd "C-s") 'swiper-isearch-thing-at-point)
 (global-set-key (kbd "C-x C-y") 'counsel-ag)
 (global-set-key (kbd "C-x B") 'counsel-recentf)
 (global-set-key (kbd "C-x Y") 'counsel-yank-pop)

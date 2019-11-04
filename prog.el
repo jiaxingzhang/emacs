@@ -7,7 +7,7 @@
 
 (defun connect-remote ()
   (interactive)
-  (dired "/jzhang@jzhang-maci:~/"))
+  (dired "/jzhang@ah-jzhang-maci:~/"))
 
 ;;
 ;; Programming related stuff
