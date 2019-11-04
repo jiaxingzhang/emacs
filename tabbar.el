@@ -85,6 +85,3 @@ Emacs buffer are those starting with “*”."
 ;(setq tabbar-ruler-popup-toolbar t)    ; get popup toolbar
 (setq tabbar-ruler-popup-scrollbar t)  ; show scroll-bar on mouse-move
 (require 'tabbar-ruler)
-
-(global-set-key (kbd "M-n") 'avy-goto-char-timer)
-(global-set-key (kbd "M-l") 'avy-goto-line)
