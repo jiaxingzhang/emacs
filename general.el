@@ -245,6 +245,12 @@ searches all buffers."
       (message filename))))
 (global-set-key (kbd "C-x y") 'my-put-file-name-on-clipboard)
 
+;; Anzu
+(global-anzu-mode +1)
+(anzu-mode +1)
+(global-set-key [remap query-replace] 'anzu-query-replace)
+(global-set-key [remap query-replace-regexp] 'anzu-query-replace-regexp)
+
 ;;
 ;; Some old settings that need to be cleaned up
 ;;
@@ -284,4 +290,5 @@ searches all buffers."
  '(progn
    (global-set-key (kbd "C-+") 'hs-toggle-hiding)))
 (define-key nxml-mode-map (kbd "C-c h") 'hs-toggle-hiding)
+
 
