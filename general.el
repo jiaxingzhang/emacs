@@ -15,9 +15,8 @@
 
 ;; theme
 (cond ((eq system-type 'darwin)
-       ;; (load-theme 'spacemacs-light t) 
-       ;; this don't work well in Linux terminal
-       (require 'powerline)
+       (load-theme 'dracula t) 
+       (require 'powerline)       ;; this don't work well in Linux terminal
        (powerline-default-theme)
        )
       ((eq system-type 'gnu/linux)
