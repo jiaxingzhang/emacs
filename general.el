@@ -260,6 +260,10 @@ searches all buffers."
 (define-key isearch-mode-map [remap isearch-query-replace-regexp] #'anzu-isearch-query-replace-regexp)
 
 ;;
+(require 'mermaid-mode)
+(add-to-list 'auto-mode-alist '("\\.mmd\\'" . mermaid-mode))
+
+;;
 ;; Some old settings that need to be cleaned up
 ;;
 (when (executable-find "hunspell")
