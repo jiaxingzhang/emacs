@@ -259,7 +259,7 @@ searches all buffers."
 (define-key isearch-mode-map [remap isearch-query-replace]  #'anzu-isearch-query-replace)
 (define-key isearch-mode-map [remap isearch-query-replace-regexp] #'anzu-isearch-query-replace-regexp)
 
-(require 'mermaid-mode)
-(add-to-list 'auto-mode-alist '("\\.mmd\\'" . mermaid-mode))
+;; (require 'mermaid-mode)
+;; (add-to-list 'auto-mode-alist '("\\.mmd\\'" . mermaid-mode))
 
 ;;
