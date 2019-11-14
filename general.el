@@ -20,7 +20,7 @@
        (powerline-default-theme)
        )
       ((eq system-type 'gnu/linux)
-       ;; (load-theme 'dracula t)
+;       (load-theme 'dracula t)
        ))
 
 ;; icons
@@ -183,8 +183,8 @@ try-expand-whole-kill))
 (global-set-key (kbd "C-x C-y") 'counsel-ag)
 (global-set-key (kbd "C-x B") 'counsel-recentf)
 (global-set-key (kbd "C-x Y") 'counsel-yank-pop)
-(global-set-key (kbd "C-i") 'avy-goto-char-timer)
-(global-set-key (kbd "C-o") 'avy-goto-line)
+(global-set-key (kbd "C-M-j") 'avy-goto-char-timer)
+(global-set-key (kbd "M-j") 'avy-goto-line)
 (defun ivy-icomplete (f &rest r)
   (icomplete-mode -1)
   (unwind-protect
@@ -258,45 +258,3 @@ searches all buffers."
  '(anzu-replace-to-string-separator " => "))
 (define-key isearch-mode-map [remap isearch-query-replace]  #'anzu-isearch-query-replace)
 (define-key isearch-mode-map [remap isearch-query-replace-regexp] #'anzu-isearch-query-replace-regexp)
-
-;;
-;; Some old settings that need to be cleaned up
-;;
-(when (executable-find "hunspell")
-  (setq-default ispell-program-name "hunspell")
-  (setq ispell-really-hunspell t))
-(global-set-key (kbd "C-x C-o") 'ff-find-other-file)
-
-(defun rename-file-and-buffer (new-name)
-  "Renames both current buffer and file it's visiting to NEW-NAME."
-  (interactive "sNew name: ")
-  (let ((name (buffer-name))
-        (filename (buffer-file-name)))
-    (if (not filename)
-        (message "Buffer '%s' is not visiting a file!" name)
-      (if (get-buffer new-name)
-          (message "A buffer named '%s' already exists!" new-name)
-        (progn
-          (rename-file filename new-name 1)
-          (rename-buffer new-name)
-          (set-visited-file-name new-name)
-          (set-buffer-modified-p nil))))))
-
-;; HTML stuff
-(require 'hideshow)
-(require 'sgml-mode)
-(require 'nxml-mode)
-(add-to-list 'hs-special-modes-alist
-             '(nxml-mode
-               "<!--\\|<[^/>]*[^/]>"
-               "-->\\|</[^/>]*[^/]>"
-               "<!--"
-               sgml-skip-tag-forward
-               nil))
-(add-hook 'nxml-mode-hook 'hs-minor-mode)
-(eval-after-load 'hideshow
- '(progn
-   (global-set-key (kbd "C-+") 'hs-toggle-hiding)))
-(define-key nxml-mode-map (kbd "C-c h") 'hs-toggle-hiding)
-
-
