@@ -38,6 +38,27 @@ This command switches to browser."
 ;; Prevent gdb from popping i/o window to the foreground on every output op
 (setq-default gdb-display-io-nopopup t)
 
+;; Racket related stuff
+(setq tab-always-indent 'complete)
+
+;; (use-package paredit
+;;   :ensure t
+;;   :config
+;;   (dolist (m '(emacs-lisp-mode-hook
+;; 	       racket-mode-hook
+;; 	       racket-repl-mode-hook))
+;;     (add-hook m #'paredit-mode))
+;;   (bind-keys :map paredit-mode-map
+;; 	     ("{"   . paredit-open-curly)
+;; 	     ("}"   . paredit-close-curly))
+;;   (unless terminal-frame
+;;     (bind-keys :map paredit-mode-map
+;; 	       ("M-[" . paredit-wrap-square)
+;; 	       ("M-{" . paredit-wrap-curly))))
+
+(require 'smartparens-config)
+
+
 ;; basic keybindings for compile and debug
 ;; (global-set-key (kbd "C-c c") 'compile)
 ;; (global-set-key (kbd "C-c d") 'gud-gdb)
@@ -132,4 +153,5 @@ This command switches to browser."
 ;;         (helm-google-suggest-actions '(("Stackoverflow" . my-get-stackoverflow-answers))))
 ;;     (helm-google-suggest)))
 ;; (global-set-key (kbd "C-c f") 'my-helm-stackoverflow-lookup)
+
 
