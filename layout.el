@@ -19,13 +19,13 @@
 ;; note: we need ace-window for this to work
 (global-set-key (kbd "C-x m") 'ace-window)
 
-(require 'column-marker)
-;; To undo, C-u C-x n
-(global-set-key (kbd "C-c n") 'column-marker-1) ;; toggle highlight the current column
-;; To turn off showing the marker, C-u C-x e
-;; (global-set-key [?\C-x ?e] (lambda () (interactive) (column-marker-2 80)))
-;; Kinda slow if we turn on the hook, so just use C-x e to show 80 column marker
-;; (add-hook 'c++-mode-hook (lambda () (interactive) (column-marker-1 80)))
+;; (require 'column-marker)
+;; ;; To undo, C-u C-x n
+;; (global-set-key (kbd "C-c n") 'column-marker-1) ;; toggle highlight the current column
+;; ;; To turn off showing the marker, C-u C-x e
+;; ;; (global-set-key [?\C-x ?e] (lambda () (interactive) (column-marker-2 80)))
+;; ;; Kinda slow if we turn on the hook, so just use C-x e to show 80 column marker
+;; ;; (add-hook 'c++-mode-hook (lambda () (interactive) (column-marker-1 80)))
 
 (require 'iflipb)
 (defun my-iflipb-buffer-list ()
@@ -98,9 +98,9 @@ i.e. change right window to bottom, or change bottom window to right."
   (message "Last buffer (%s) is not currently visible" (buffer-name otherbuf)))))
 (global-set-key [?\C-x ?l] 'switch-to-previous-buffer-in-a-different-window)
 
-(defadvice pop-to-buffer (before cancel-other-window first)
-  (ad-set-arg 1 nil))
-(ad-activate 'pop-to-buffer)
+;; (defadvice pop-to-buffer (before cancel-other-window first)
+;;   (ad-set-arg 1 nil))
+;; (ad-activate 'pop-to-buffer)
 
 ;; Toggle window dedication
 ;; Press C-x d in each window you want to "freeze"
