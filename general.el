@@ -271,6 +271,7 @@ searches all buffers."
 
 ;; Origami folding
 (require 'origami)
+(global-origami-mode t)
 
 (global-set-key (kbd "C-c f f") 'origami-close-node)
 (global-set-key (kbd "C-c f o") 'origami-open-node)

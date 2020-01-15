@@ -60,9 +60,6 @@ This command switches to browser."
 ;; 	       ("M-[" . paredit-wrap-square)
 ;; 	       ("M-{" . paredit-wrap-curly))))
 
-(require 'smartparens-config)
-
-
 ;; basic keybindings for compile and debug
 ;; (global-set-key (kbd "C-c c") 'compile)
 ;; (global-set-key (kbd "C-c d") 'gud-gdb)
