@@ -5,6 +5,10 @@
 (setq mathworks-compile-flags "DEBUG=1")
 (setq sbtools-load-p4e nil)
 
+;; I still don't like the long lines despite the wide screen
+(setq-default header-line-format 
+              (list " " (make-string 100 ?-) "|"))
+
 (defun connect-remote ()
   (interactive)
   (dired "/jzhang@ah-jzhang-maci:~/"))

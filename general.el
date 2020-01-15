@@ -180,7 +180,10 @@ try-expand-whole-kill))
 (setq ivy-use-virtual-buffers t)
 (setq ivy-height 20)
 (setq ivy-count-format "(%d/%d) ")
-(global-set-key (kbd "C-x C-y") 'counsel-ag)
+(defun my-counsel-ag ()
+  (interactive)
+  (counsel-ag nil default-directory))
+(global-set-key (kbd "C-x C-y") 'my-counsel-ag)
 (global-set-key (kbd "C-x B") 'counsel-recentf)
 (global-set-key (kbd "C-x Y") 'counsel-yank-pop)
 (global-set-key (kbd "C-M-j") 'avy-goto-char-timer)
@@ -258,8 +261,23 @@ searches all buffers."
  '(anzu-replace-to-string-separator " => "))
 (define-key isearch-mode-map [remap isearch-query-replace]  #'anzu-isearch-query-replace)
 (define-key isearch-mode-map [remap isearch-query-replace-regexp] #'anzu-isearch-query-replace-regexp)
+(global-set-key (kbd "C-M-d") 'anzu-query-replace-at-cursor-thing)
+
+(setq-default header-line-format 
+              (list " " (make-string 80 ?-) "|"))
 
 ;; (require 'mermaid-mode)
 ;; (add-to-list 'auto-mode-alist '("\\.mmd\\'" . mermaid-mode))
 
-;;
+;; Origami folding
+(require 'origami)
+
+(global-set-key (kbd "C-c f f") 'origami-close-node)
+(global-set-key (kbd "C-c f o") 'origami-open-node)
+
+(global-set-key (kbd "C-c f g") 'origami-close-node-recursively)
+(global-set-key (kbd "C-c f p") 'origami-open-node-recursively)
+
+(global-set-key (kbd "C-c f A") 'origami-open-all-nodes)
+(global-set-key (kbd "C-c f a") 'origami-close-all-nodes)
+
