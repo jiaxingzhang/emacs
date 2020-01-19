@@ -59,7 +59,7 @@ That is, a string used to represent it on the tab bar."
   "Return the list of group names the current buffer belongs to.
 This function is a custom function for tabbar-mode's tabbar-buffer-groups.
 This function group all buffers into 3 groups:
-Those Dired, those user buffer, and those emacs buffer.
+””Those Dired, those user buffer, and those emacs buffer.
 Emacs buffer are those starting with “*”."
   (list
    (cond
@@ -74,11 +74,11 @@ Emacs buffer are those starting with “*”."
      )
     )))
 
-(setq tabbar-buffer-groups-function 'tabbar-buffer-groups)
+;; (setq tabbar-buffer-groups-function 'tabbar-buffer-groups)
 (global-set-key (kbd "M-}") 'tabbar-forward)
 (global-set-key (kbd "M-{") 'tabbar-backward)
 
-(setq tabbar-ruler-swap-faces t)
+(if (not (display-graphic-p)) (setq tabbar-ruler-swap-faces t))
 (setq tabbar-ruler-global-tabbar t)    ; get tabbar
 (setq tabbar-ruler-global-ruler nil)     ; get global ruler
 ;(setq tabbar-ruler-popup-menu t)       ; get popup menu.
