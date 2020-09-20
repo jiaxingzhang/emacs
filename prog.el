@@ -2,12 +2,12 @@
 ;; Note: This is specific for programming
 
 ;; A bit TMW specific stuff: 
-(setq mathworks-compile-flags "DEBUG=1")
+(setq mathworks-compile-flags "DEBUG=1 SIMULINK_DXFR_DEBUG=1")
 (setq sbtools-load-p4e nil)
 
-;; I still don't like the long lines despite the wide screen
-(setq-default header-line-format 
-              (list " " (make-string 100 ?-) "|"))
+;; ;; I still don't like the long lines despite the wide screen
+;; (setq-default header-line-format 
+;;               (list " " (make-string 100 ?-) "|"))
 
 (defun connect-remote ()
   (interactive)

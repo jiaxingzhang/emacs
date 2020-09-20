@@ -11,7 +11,7 @@
 (setq backup-directory-alist `(("." . "~/.emacs_save")))
 
 ;; always start as a server
-(server-start)
+;; (server-start)
 
 ;; theme
 (cond ((eq system-type 'darwin)
@@ -112,7 +112,7 @@
 (mouse-avoidance-mode 'animate)
 (auto-compression-mode 1)
 (column-number-mode t)
-(blink-cursor-mode -1)
+(blink-cursor-mode t)
 (transient-mark-mode 1)
 (show-paren-mode 1)
 (mouse-wheel-mode t)
@@ -138,7 +138,11 @@ scroll-conservatively 10000)
        "DeepSkyBlue1" "MediumOrchid1" "cyan" "white"])
 ;;; (modern-c++-font-lock-global-mode t) ;; modern-c look and feel
 (global-set-key (kbd "C-c l") 'global-hl-line-mode) ;; toggle highlight the current line
-(global-set-key (kbd "C-c z") 'company-mode) ;; toggle company-mode
+
+
+;; mark ring size
+(setq mark-ring-max 99)
+(setq global-mark-ring-max 99)
 
 ;;
 ;; auto completion related features
@@ -167,13 +171,14 @@ try-expand-whole-kill))
 ;; (require 'helm-ag)
 ;; (global-set-key (kbd "C-x C-f") 'helm-find-files)
 ;; (global-set-key (kbd "C-x b") 'helm-mini)
-;; (global-set-key (kbd "C-x C-y") 'helm-do-ag)
+;; (global-set-key (kbd "C-x C-r") 'helm-do-grep-ag)
 ;; (global-set-key (kbd "C-x f") 'helm-ag-this-file)
-;; ; (global-set-key (kbd "M-x") #'helm-M-x) ; a bit too much I think
+;; ;; ; (global-set-key (kbd "M-x") #'helm-M-x) ; a bit too much I think
 ;; (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to do persistent action
 ;; (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
 ;; (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
-;; (helm-mode 1)
+;; (helm-mode 0)
+;; (global-set-key (kbd "C-c x") 'helm-mode)
 
 ;; ivy-mode as a replacement for helm
 (ivy-mode 1)
@@ -185,7 +190,9 @@ try-expand-whole-kill))
   (counsel-ag nil default-directory))
 (global-set-key (kbd "C-x C-y") 'my-counsel-ag)
 (global-set-key (kbd "C-x B") 'counsel-recentf)
-(global-set-key (kbd "C-x Y") 'counsel-yank-pop)
+
+;; (global-set-key (kbd "C-x Y") 'counsel-yank-pop)
+
 (global-set-key (kbd "C-M-j") 'avy-goto-char-timer)
 (global-set-key (kbd "M-j") 'avy-goto-line)
 (defun ivy-icomplete (f &rest r)
@@ -194,17 +201,35 @@ try-expand-whole-kill))
        (apply f r)
     (icomplete-mode 1)))
 (advice-add 'ivy-read :around #'ivy-icomplete)
+;; (add-hook 'gud-gdb-mode-hook (lambda() (ivy-mode 0)))
+;; (add-hook 'c++-mode-hook (lambda() (ivy-mode 0)))
+(global-set-key (kbd "C-c a") 'ivy-mode)
 
 ;; 3 - TabNine: AI based completion
 ;; this requires clang to be installed:
 ;; sudo apt-get install clang-7 lldb-7 lld-7 --fix-missing
 ;; sudo ln -s /usr/bin/clang-7 /usr/bin/clang
 (require 'company-tabnine)
-(add-to-list 'company-backends #'company-tabnine)
 (setq company-idle-delay 0) ;; Trigger completion immediately.
 (setq company-show-numbers t) ;; Number the candidates (use M-1, M-2 etc to select completions).
 (add-hook 'gud-gdb-mode-hook (lambda() (company-mode 0))) ;; Do not use company-mode in gud-gdb mode
 (add-hook 'wl-summary-mode-hook (lambda() (company-mode 0))) ;; too slow to have this on
+
+(defun toggle-tabnine ()
+  (interactive)
+  (if (get 'toggle-tabnine-state 'state)
+      (progn
+        (add-to-list 'company-backends #'company-tabnine)
+        (put 'toggle-tabnine-state 'state nil)
+        (message "Tabnine is on")
+        )
+    (progn
+      (setq company-backends (delete 'company-tabnine company-backends))
+      (put 'toggle-tabnine-state 'state t)
+      (message "Tabnine is off")
+      )))
+(global-set-key (kbd "C-c z") 'toggle-tabnine)
+
 
 ;; 
 ;; Other utils
@@ -259,12 +284,7 @@ searches all buffers."
  '(anzu-search-threshold 1000)
  '(anzu-replace-threshold 50)
  '(anzu-replace-to-string-separator " => "))
-(define-key isearch-mode-map [remap isearch-query-replace]  #'anzu-isearch-query-replace)
-(define-key isearch-mode-map [remap isearch-query-replace-regexp] #'anzu-isearch-query-replace-regexp)
-(global-set-key (kbd "C-M-d") 'anzu-query-replace-at-cursor-thing)
-
-(setq-default header-line-format 
-              (list " " (make-string 80 ?-) "|"))
+(global-set-key (kbd "C-x r") 'anzu-query-replace-at-cursor-thing)
 
 ;; (require 'mermaid-mode)
 ;; (add-to-list 'auto-mode-alist '("\\.mmd\\'" . mermaid-mode))
@@ -275,10 +295,15 @@ searches all buffers."
 
 (global-set-key (kbd "C-c f f") 'origami-close-node)
 (global-set-key (kbd "C-c f o") 'origami-open-node)
-
 (global-set-key (kbd "C-c f g") 'origami-close-node-recursively)
 (global-set-key (kbd "C-c f p") 'origami-open-node-recursively)
-
 (global-set-key (kbd "C-c f A") 'origami-open-all-nodes)
 (global-set-key (kbd "C-c f a") 'origami-close-all-nodes)
 
+(xterm-mouse-mode 1)
+
+;; (add-to-list 'semantic-default-submodes 'global-semantic-stickyfunc-mode)
+;; (semantic-mode 1)
+;; (require 'stickyfunc-enhance)
+
+(load-file "~/.emacs.rc/modeline.el")

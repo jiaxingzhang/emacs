@@ -40,7 +40,7 @@
      (nreverse same-major-mode-buflist)))
 (setq iflipb-buffer-list-function 'my-iflipb-buffer-list)
 (setq iflipb-wrap-around t)
-(setq iflipb-ignore-buffers (list "^[*]"))
+;; (setq iflipb-ignore-buffers (list "^[*]"))
 (global-set-key (kbd "M-o") 'iflipb-next-buffer)
 (global-set-key (kbd "M-i") 'iflipb-previous-buffer)
 
@@ -78,11 +78,15 @@ i.e. change right window to bottom, or change bottom window to right."
 ;; (global-set-key (kbd "C-x C-r") 'layout-restore)
 
 ;; bookmark features
-;;;(use-package bm
-;;;  :bind (("C-c C-x C-l" . bm-toggle)
-;;;         ("C-c C-x C-n" . bm-next)
-;;;         ("C-c C-x C-p" . bm-previous)))
-;;;
+;; (use-package bm
+;;  :bind (("C-c C-x C-l" . bm-toggle)
+;;         ("C-c C-x C-n" . bm-next)
+;;         ("C-c C-x C-p" . bm-previous)))
+
+;; use the powerful helm-mark-ring!
+(global-set-key (kbd "C-x C-a SPC") 'helm-all-mark-rings)
+(global-set-key (kbd "C-x C-a C-SPC") 'helm-mark-ring)
+
 ;; cycle windows backwards
 (defun prev-window ()
    (interactive)
