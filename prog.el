@@ -5,9 +5,10 @@
 (setq mathworks-compile-flags "DEBUG=1")
 (setq sbtools-load-p4e nil)
 
-;; I still don't like the long lines despite the wide screen
-(setq-default header-line-format 
-              (list " " (make-string 100 ?-) "|"))
+;; ;; I still don't like the long lines despite the wide screen
+;; (setq-default header-line-format 
+;;               (list " " (make-string 100 ?-) "|"))
+;; This interferes with the tab. Disable for now.
 
 (defun connect-remote ()
   (interactive)
