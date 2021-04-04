@@ -1,11 +1,7 @@
 ;; Jiaxing Zhang's GNU/Emacs file
-;; Note: This is a general set-up that should apply to all sessions
 
 ;; Package archives
-;; Out of China, this is so far the best mirrors
-;; Within China, we should replace these with TsingHua's mirrors
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                        ("marmalade" . "http://marmalade-repo.org/packages/")
                         ("melpa" . "https://melpa.org/packages/")))
 
 (setq backup-directory-alist `(("." . "~/.emacs_save")))
@@ -14,14 +10,15 @@
 (server-start)
 
 ;; theme
-(cond ((eq system-type 'darwin)
-       (load-theme 'dracula t) 
-       (require 'powerline)       ;; this don't work well in Linux terminal
-       (powerline-default-theme)
-       )
-      ((eq system-type 'gnu/linux)
-;       (load-theme 'dracula t)
-       ))
+;; I haven't found a good theme so far. So, let's not set theme at all.
+;; (cond ((eq system-type 'darwin)
+;;        (load-theme 'monokai-pro t) 
+;;        (require 'powerline)       ;; this don't work well in Linux terminal
+;;        (powerline-default-theme)
+;;        )
+;;       ((eq system-type 'gnu/linux)
+;;        (load-theme 'dracula t)
+;;        ))
 
 ;; icons
 (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
@@ -29,10 +26,6 @@
 
 (global-set-key (kbd "C-c q") 'remember-notes)
 (global-set-key (kbd "C-c Q") 'remember-other-frame)
-
-;; neotree
-(require 'neotree)
-(global-set-key (kbd "C-x t") 'neotree-toggle)
 
 ;; start up size
 (if (display-graphic-p)
@@ -57,6 +50,9 @@
 
 ;; Hack font
 ;; Click [here](https://github.com/hbin/dotfiles-for-emacs) to take a further look.
+;; brew install --cask font-hack
+;; brew install --cask font-fira-code
+(set-frame-font "Fira Code:pixelsize=12")
 (set-frame-font "Hack:pixelsize=12")
 
 ;; eshell (are we ready to fully dump eshell?)
@@ -64,7 +60,6 @@
 (defalias 'oo 'find-file-other-window)
 (setq eshell-scroll-to-bottom-on-input t)
 
-;; (setq explicit-shell-file-name "/usr/bin/fish")
 (require 'use-package)
 (use-package shell-pop
   :bind (("C-t" . shell-pop))
@@ -115,7 +110,6 @@
 (blink-cursor-mode -1)
 (transient-mark-mode 1)
 (show-paren-mode 1)
-(mouse-wheel-mode t)
 (setq scroll-step 1
 scroll-margin 3
 scroll-conservatively 10000)
@@ -130,12 +124,14 @@ scroll-conservatively 10000)
 (setq-default ispell-program-name "aspell")
 (savehist-mode 1)
 (put 'narrow-to-region 'disabled nil)
+
 ;; set the clipboard
 (setq x-select-enable-clipboard t)
 (if (eq system-type 'gnu-linux) (setq interprogram-paste-function 'x-cut-buffer-or-selection-value))
 (setq ansi-color-names-vector
       ["black" "tomato" "PaleGreen2" "gold1"
        "DeepSkyBlue1" "MediumOrchid1" "cyan" "white"])
+
 ;;; (modern-c++-font-lock-global-mode t) ;; modern-c look and feel
 (global-set-key (kbd "C-c l") 'global-hl-line-mode) ;; toggle highlight the current line
 (global-set-key (kbd "C-c z") 'company-mode) ;; toggle company-mode
@@ -163,37 +159,41 @@ try-expand-whole-kill))
 
 ;; helm seems to interfere with gdb-gud mode? 
 ;; 2 - Helm 
-;; (require 'helm-config)
-;; (require 'helm-ag)
-;; (global-set-key (kbd "C-x C-f") 'helm-find-files)
-;; (global-set-key (kbd "C-x b") 'helm-mini)
-;; (global-set-key (kbd "C-x C-y") 'helm-do-ag)
-;; (global-set-key (kbd "C-x f") 'helm-ag-this-file)
-;; ; (global-set-key (kbd "M-x") #'helm-M-x) ; a bit too much I think
-;; (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to do persistent action
-;; (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
-;; (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
-;; (helm-mode 1)
+(require 'helm-config)
+(require 'helm-ag)
+(require 'helm)
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
+(global-set-key (kbd "C-x b") 'helm-mini)
+(global-set-key (kbd "C-x C-y") 'helm-do-ag)
+(global-set-key (kbd "C-x f") 'helm-ag-this-file)
+(global-set-key (kbd "M-x") 'helm-M-x)
+; (global-set-key (kbd "M-x") #'helm-M-x) ; a bit too much I think
+(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to do persistent action
+(define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+(define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+(helm-mode 1)
 
 ;; ivy-mode as a replacement for helm
-(ivy-mode 1)
-(setq ivy-use-virtual-buffers t)
-(setq ivy-height 20)
-(setq ivy-count-format "(%d/%d) ")
-(defun my-counsel-ag ()
-  (interactive)
-  (counsel-ag nil default-directory))
-(global-set-key (kbd "C-x C-y") 'my-counsel-ag)
-(global-set-key (kbd "C-x B") 'counsel-recentf)
-(global-set-key (kbd "C-x Y") 'counsel-yank-pop)
-(global-set-key (kbd "C-M-j") 'avy-goto-char-timer)
+;; (ivy-mode 1)
+;; (setq ivy-use-virtual-buffers t)
+;; (setq ivy-height 20)
+;; (setq ivy-count-format "(%d/%d) ")
+;; (defun my-counsel-ag ()
+;;   (interactive)
+;;   (counsel-ag nil default-directory))
+;; (global-set-key (kbd "C-x C-y") 'my-counsel-ag)
+;; (global-set-key (kbd "C-x B") 'counsel-recentf)
+;; (global-set-key (kbd "C-x Y") 'counsel-yank-pop)
+;; (global-set-key (kbd "C-M-j") 'avy-goto-char-timer)
+;; (global-set-key (kbd "M-j") 'avy-goto-line)
+;; (defun ivy-icomplete (f &rest r)
+;;   (icomplete-mode -1)
+;;   (unwind-protect
+;;        (apply f r)
+;;     (icomplete-mode 1)))
+;; (advice-add 'ivy-read :around #'ivy-icomplete)
+(global-set-key (kbd "M-k") 'avy-goto-char-timer)
 (global-set-key (kbd "M-j") 'avy-goto-line)
-(defun ivy-icomplete (f &rest r)
-  (icomplete-mode -1)
-  (unwind-protect
-       (apply f r)
-    (icomplete-mode 1)))
-(advice-add 'ivy-read :around #'ivy-icomplete)
 
 ;; 3 - TabNine: AI based completion
 ;; this requires clang to be installed:
@@ -204,14 +204,13 @@ try-expand-whole-kill))
 (setq company-idle-delay 0) ;; Trigger completion immediately.
 (setq company-show-numbers t) ;; Number the candidates (use M-1, M-2 etc to select completions).
 (add-hook 'gud-gdb-mode-hook (lambda() (company-mode 0))) ;; Do not use company-mode in gud-gdb mode
-(add-hook 'wl-summary-mode-hook (lambda() (company-mode 0))) ;; too slow to have this on
+;; (add-hook 'wl-summary-mode-hook (lambda() (company-mode 0))) ;; too slow to have this on
 
 ;; 
 ;; Other utils
 ;;
 
 ;; search string in all opened buffers (C-x g). I know that string is in my Emacs somewhere! 
-(require 'cl)
 (defcustom search-all-buffers-ignored-files (list (rx-to-string '(and bos (or ".bash_history" "TAGS") eos)))
   "Files to ignore when searching buffers via \\[search-all-buffers]."
   :type 'editable-list)
@@ -231,8 +230,6 @@ searches all buffers."
       (remove-if-not 'buffer-file-name (buffer-list))))
    regexp))
 (global-set-key (kbd "C-x g") 'search-all-buffers)
-;; (global-set-key (kbd "C-*") 'evil-search-word-forward)
-;; (global-set-key (kbd "C-#") 'evil-search-word-backward)
 
 (defun my-put-file-name-on-clipboard ()
   "Put the current file name on the clipboard"
@@ -248,7 +245,6 @@ searches all buffers."
 (global-set-key (kbd "C-x y") 'my-put-file-name-on-clipboard)
 
 ;; Anzu
-
 (require 'anzu)
 (global-anzu-mode +1)
 (set-face-attribute 'anzu-mode-line nil
@@ -263,12 +259,6 @@ searches all buffers."
 (define-key isearch-mode-map [remap isearch-query-replace-regexp] #'anzu-isearch-query-replace-regexp)
 (global-set-key (kbd "C-M-d") 'anzu-query-replace-at-cursor-thing)
 
-(setq-default header-line-format 
-              (list " " (make-string 80 ?-) "|"))
-
-;; (require 'mermaid-mode)
-;; (add-to-list 'auto-mode-alist '("\\.mmd\\'" . mermaid-mode))
-
 ;; Origami folding
 (require 'origami)
 (global-origami-mode t)
@@ -282,26 +272,130 @@ searches all buffers."
 (global-set-key (kbd "C-c f A") 'origami-open-all-nodes)
 (global-set-key (kbd "C-c f a") 'origami-close-all-nodes)
 
+(global-highlight-parentheses-mode)
+(toggle-scroll-bar -1)
+(global-linum-mode -1)
 
-;;
-;; ace jump mode major function
-;; 
-(autoload
-  'ace-jump-mode
-  "ace-jump-mode"
-  "Emacs quick move minor mode"
-  t)
-;; you can select the key you prefer to
-(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+;; Ruby
+(add-hook 'ruby-mode-hook 'ruby-electric-mode)
+(add-hook 'ruby-mode-hook 'seeing-is-believing)
+(require 'seeing-is-believing)
 
-;; 
-;; enable a more powerful jump back function from ace jump mode
-;;
-(autoload
-  'ace-jump-mode-pop-mark
-  "ace-jump-mode"
-  "Ace jump back:-)"
-  t)
-(eval-after-load "ace-jump-mode"
-  '(ace-jump-mode-enable-mark-sync))
-(define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
+;; LSP
+(use-package lsp-ui)
+(require 'lsp-mode)
+(use-package lsp-mode
+  :config
+  (add-hook 'c++-mode-hook #'lsp)
+  (add-hook 'js-mode-hook #'lsp)
+  (add-hook 'ruby-mode-hook #'lsp)
+  (add-hook 'enh-ruby-mode-hook #'lsp)
+  (add-hook 'ocaml-mode-hook #'lsp)
+  (add-hook 'tuareg-mode-hook #'lsp)
+  (add-hook 'racket-mode-hook #'lsp)
+  (setq lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error"))
+  )
+
+(defun lsp-clients-ruby-make-options ()
+  `(:solargraph.diagnostics t))
+
+;; Ruby
+(lsp-register-client
+ (make-lsp-client :new-connection (lsp-stdio-connection '("solargraph" "stdio"))
+                  :major-modes '(ruby-mode enh-ruby-mode)
+                  :priority -1
+                  :multi-root t
+                  :initialization-options #'lsp-clients-ruby-make-options
+                  :server-id 'ruby-ls))
+
+(define-key lsp-mode-map (kbd "C-x i") 'lsp-rename)
+(define-key lsp-mode-map (kbd "C-c t .") 'lsp-ui-peek-find-definitions)
+(define-key lsp-mode-map (kbd "C-c t /") 'lsp-ui-peek-find-references)
+(define-key lsp-mode-map (kbd "C-c m q") 'lsp-format-region)
+
+(global-set-key (kbd "C-x C-a C-b") 'realgud:cmd-break)
+
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+
+(require 'realgud-byebug)
+(require 'realgud-lldb)
+
+(use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :init (setq markdown-command "multimarkdown"))
+
+;; focus mode
+'((prog-mode . defun) (text-mode . sentence))
+
+(setq markdown-fontify-code-blocks-natively t)
+
+(electric-pair-mode 1)
+
+(require 'expand-region)
+(global-set-key (kbd "C-=") 'er/expand-region)
+
+(load-file "~/.emacs.rc/local/dot-mode.el")
+(require 'dot-mode)
+(add-hook 'find-file-hooks 'dot-mode-on)
+(global-set-key (kbd "M-.") 'dot-mode-execute)
+
+;; store all backup and autosave files in the tmp dir
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
+
+(setq racket-program "/Applications/Racket v8.0/bin/racket")
+
+(global-set-key (kbd "C-x c") 'seeing-is-believing-clear)
+(global-set-key (kbd "C-x .") 'seeing-is-believing-run-as-xmpfilter)
+
+(require 'ruby-mode)
+(setq package-list '(better-defaults
+                     solarized-theme
+                     helm-projectile
+                     helm-ag
+                     ruby-electric
+                     seeing-is-believing
+                     chruby
+                     inf-ruby))
+;; ...
+(autoload 'inf-ruby-minor-mode "inf-ruby" "Run an inferior Ruby process" t)
+(add-hook 'ruby-mode-hook 'inf-ruby-minor-mode)
+
+(setenv "PATH" (concat "/usr/local/smlnj/bin:" (getenv "PATH")))
+(setq exec-path (cons "/usr/local/smlnj/bin"  exec-path))
+
+(xterm-mouse-mode 1)
+(require 'mouse)
+(xterm-mouse-mode t)
+(defun track-mouse (e)) 
+(setq mouse-sel-mode t)
+
+(xclip-mode 1)
+
+;;;; Mouse scrolling in terminal emacs
+(unless (display-graphic-p)
+  ;; activate mouse-based scrolling
+  (xterm-mouse-mode 1)
+  (global-set-key (kbd "<mouse-4>") 'scroll-down-line)
+  (global-set-key (kbd "<mouse-5>") 'scroll-up-line)
+  )
+
+(require 'smartparens-config)
+(use-package smartparens
+  :demand
+  :config
+  (smartparens-mode t)
+  :bind
+  ("C-M-n" . sp-forward-sexp)
+  ("C-M-p" . sp-backward-sexp)
+  )
+(add-hook 'js-mode-hook #'smartparens-mode)
+(add-hook 'ruby-mode-hook #'smartparens-mode)
+(add-hook 'sml-mode-hook #'smartparens-mode)
+(add-hook 'c++-mode-hook #'smartparens-mode)
