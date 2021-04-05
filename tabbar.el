@@ -78,10 +78,12 @@ Emacs buffer are those starting with “*”."
 (global-set-key (kbd "M-}") 'tabbar-forward)
 (global-set-key (kbd "M-{") 'tabbar-backward)
 
-(if (not (display-graphic-p)) (setq tabbar-ruler-swap-faces t))
+;; (if (not (display-graphic-p)) (setq tabbar-ruler-swap-faces t))
 (setq tabbar-ruler-global-tabbar t)    ; get tabbar
 (setq tabbar-ruler-global-ruler nil)     ; get global ruler
-;(setq tabbar-ruler-popup-menu t)       ; get popup menu.
-;(setq tabbar-ruler-popup-toolbar t)    ; get popup toolbar
+(setq tabbar-ruler-popup-menu t)       ; get popup menu.
+(setq tabbar-ruler-popup-toolbar t)    ; get popup toolbar
 (setq tabbar-ruler-popup-scrollbar t)  ; show scroll-bar on mouse-move
 (require 'tabbar-ruler)
+
+(setq tabbar-ruler-swap-faces nil)
