@@ -1,13 +1,14 @@
 ;; Jiaxing Zhang's GNU/Emacs file
-
 ;; Package archives
+(setq package-check-signature nil)
+
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                         ("melpa" . "https://melpa.org/packages/")))
 
 (setq backup-directory-alist `(("." . "~/.emacs_save")))
 
 ;; always start as a server
-(server-start)
+;; (server-start)
 
 ;; theme
 ;; I haven't found a good theme so far. So, let's not set theme at all.
@@ -71,13 +72,12 @@
   (setq shell-pop-autocd-to-working-dir nil) ; don't auto-cd 
   )
 
-;; General Settings
+;; ;; General Settings
 (setq version-control t)
 (setq kept-old-versions 2)
 (setq kept-new-versions 6)
 (setq delete-old-versions t)
 (setq backup-by-copying t)
-(setq debug-on-error t)
 (setq visible-bell 1)
 (setq ring-bell-function 'ignore)
 (setq read-buffer-completion-ignore-case t)
@@ -132,9 +132,8 @@ scroll-conservatively 10000)
       ["black" "tomato" "PaleGreen2" "gold1"
        "DeepSkyBlue1" "MediumOrchid1" "cyan" "white"])
 
-;;; (modern-c++-font-lock-global-mode t) ;; modern-c look and feel
+;; (modern-c++-font-lock-global-mode t) ;; modern-c look and feel
 (global-set-key (kbd "C-c l") 'global-hl-line-mode) ;; toggle highlight the current line
-(global-set-key (kbd "C-c z") 'company-mode) ;; toggle company-mode
 
 ;;
 ;; auto completion related features
@@ -199,12 +198,65 @@ try-expand-whole-kill))
 ;; this requires clang to be installed:
 ;; sudo apt-get install clang-7 lldb-7 lld-7 --fix-missing
 ;; sudo ln -s /usr/bin/clang-7 /usr/bin/clang
-(require 'company-tabnine)
-(add-to-list 'company-backends #'company-tabnine)
-(setq company-idle-delay 0) ;; Trigger completion immediately.
-(setq company-show-numbers t) ;; Number the candidates (use M-1, M-2 etc to select completions).
-(add-hook 'gud-gdb-mode-hook (lambda() (company-mode 0))) ;; Do not use company-mode in gud-gdb mode
-;; (add-hook 'wl-summary-mode-hook (lambda() (company-mode 0))) ;; too slow to have this on
+;; (require 'company-tabnine)
+;; (add-to-list 'company-backends #'company-tabnine)
+;; (setq company-idle-delay 0) ;; Trigger completion immediately.
+;; (setq company-show-numbers t) ;; Number the candidates (use M-1, M-2 etc to select completions).
+;; (add-hook 'gud-gdb-mode-hook (lambda() (company-mode 0))) ;; Do not use company-mode in gud-gdb mode
+;; ;; (add-hook 'wl-summary-mode-hook (lambda() (company-mode 0))) ;; too slow to have this on
+;; (global-set-key (kbd "C-c z") 'company-mode) ;; toggle company-mode
+
+(global-unset-key (kbd "C-z"))
+(use-package company-tabnine
+  :defer 1
+  :custom
+  (company-tabnine-max-num-results 9)
+  :bind
+  (("M-q" . company-other-backend)
+   ("C-z" . company-tabnine))
+  :init
+  (defun company-tabnine-toggle (&optional enable)
+    "Enable/Disable TabNine. If ENABLE is non-nil, definitely enable it."
+    (interactive)
+    (if (or enable (not (memq 'company-tabnine company-backends)))
+        (progn
+          (add-hook 'lsp-after-open-hook #'lsp-after-open-tabnine)
+          (add-to-list 'company-backends #'company-tabnine)
+          (when (bound-and-true-p lsp-mode) (lsp-after-open-tabnine))
+          (message "TabNine enabled."))
+      (setq company-backends (delete 'company-tabnine company-backends))
+      (setq company-backends (delete '(company-capf :with company-tabnine :separate) company-backends))
+      (remove-hook 'lsp-after-open-hook #'lsp-after-open-tabnine)
+      (company-tabnine-kill-process)
+      (message "TabNine disabled.")))
+  (defun company//sort-by-tabnine (candidates)
+    "Integrate company-tabnine with lsp-mode"
+    (if (or (functionp company-backend)
+            (not (and (listp company-backend) (memq 'company-tabnine company-backends))))
+        candidates
+      (let ((candidates-table (make-hash-table :test #'equal))
+            candidates-lsp
+            candidates-tabnine)
+        (dolist (candidate candidates)
+          (if (eq (get-text-property 0 'company-backend candidate)
+                  'company-tabnine)
+              (unless (gethash candidate candidates-table)
+                (push candidate candidates-tabnine))
+            (push candidate candidates-lsp)
+            (puthash candidate t candidates-table)))
+        (setq candidates-lsp (nreverse candidates-lsp))
+        (setq candidates-tabnine (nreverse candidates-tabnine))
+        (nconc (seq-take candidates-tabnine 3)
+               (seq-take candidates-lsp 6)))))
+  (defun lsp-after-open-tabnine ()
+    "Hook to attach to `lsp-after-open'."
+    (setq-local company-tabnine-max-num-results 3)
+    (add-to-list 'company-transformers 'company//sort-by-tabnine t)
+    (add-to-list 'company-backends '(company-capf :with company-tabnine :separate)))
+  :hook
+  (kill-emacs . company-tabnine-kill-process)
+  :config
+  (company-tabnine-toggle t))
 
 ;; 
 ;; Other utils
@@ -281,10 +333,14 @@ searches all buffers."
 (add-hook 'ruby-mode-hook 'seeing-is-believing)
 (require 'seeing-is-believing)
 
+;; Racket
+(setq racket-program "/Applications/Racket v8.0/bin/racket")
+
 ;; LSP
 (use-package lsp-ui)
 (require 'lsp-mode)
 (use-package lsp-mode
+  :ensure t
   :config
   (add-hook 'c++-mode-hook #'lsp)
   (add-hook 'js-mode-hook #'lsp)
@@ -294,7 +350,12 @@ searches all buffers."
   (add-hook 'tuareg-mode-hook #'lsp)
   (add-hook 'racket-mode-hook #'lsp)
   (setq lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error"))
+  (setq lsp-signature-auto-activate nil)
   )
+
+(require 'lsp-racket)
+
+(require 'racket-mode)
 
 (defun lsp-clients-ruby-make-options ()
   `(:solargraph.diagnostics t))
@@ -349,8 +410,6 @@ searches all buffers."
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
 
-(setq racket-program "/Applications/Racket v8.0/bin/racket")
-
 (global-set-key (kbd "C-x c") 'seeing-is-believing-clear)
 (global-set-key (kbd "C-x .") 'seeing-is-believing-run-as-xmpfilter)
 
@@ -398,4 +457,42 @@ searches all buffers."
 (add-hook 'js-mode-hook #'smartparens-mode)
 (add-hook 'ruby-mode-hook #'smartparens-mode)
 (add-hook 'sml-mode-hook #'smartparens-mode)
-(add-hook 'c++-mode-hook #'smartparens-mode)
+(add-hook 'c++-mode-hook (lambda () (smartparens-mode -1)) t)
+
+(require 'yasnippet)
+(yas-global-mode 1)
+
+(require 'workgroups)
+(setq wg-prefix-key (kbd "C-c z"))
+(workgroups-mode 1)
+
+;; fix the tab size
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+(setq indent-line-function 'insert-tab)
+
+;; (defun turn-off-eldoc () (eldoc-mode -1))
+;; (add-hook 'eval-expression-minibuffer-setup-hook #'turn-off-eldoc)
+;; (add-hook 'racket-mode-hook #'turn-off-eldoc)
+
+;; Go Lang
+(require 'lsp-mode)
+(add-hook 'go-mode-hook #'lsp-deferred)
+
+;; Set up before-save hooks to format buffer and add/delete imports.
+;; Make sure you don't have other gofmt/goimports hooks enabled.
+(defun lsp-go-install-save-hooks ()
+  (add-hook 'before-save-hook #'lsp-format-buffer t t)
+  (add-hook 'before-save-hook #'lsp-organize-imports t t))
+(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+(add-hook 'go-mode-hook #'gorepl-mode)
+
+;; Leet Code
+(setq leetcode-prefer-language "python3")
+(setq leetcode-prefer-sql "mysql")
+(setq leetcode-save-solutions t)
+(setq leetcode-directory "~/repos/code/leet")
+    
+
+
+
