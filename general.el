@@ -497,7 +497,7 @@ i.e. change right window to bottom, or change bottom window to right."
 (global-set-key (kbd "C-=") 'er/expand-region)
 
 ;; quite nice to mimic dot in vim
-(global-set-key (kbd "M-.") 'dot-mode-execute)
+(global-set-key (kbd "C-.") 'dot-mode-execute)
 
 ;; FIXME (2021-05-19) Is this really needed?
 (global-set-key (kbd "C-c t i") 'counsel-imenu)
@@ -541,10 +541,37 @@ i.e. change right window to bottom, or change bottom window to right."
   (setq shell-pop-autocd-to-working-dir nil) ; don't auto-cd 
   )
 
+;; LSP
+(require 'lsp-ui)
+(require 'lsp-mode)
+
 ;; sbtools turn this on by default?
 (cond ((eq system-type 'darwin)
+       (use-package lsp-mode
+	 :ensure t
+	 :config
+	 (add-hook 'c++-mode-hook #'lsp)
+	 (add-hook 'js-mode-hook #'lsp)
+	 (add-hook 'ruby-mode-hook #'lsp)
+	 (add-hook 'enh-ruby-mode-hook #'lsp)
+	 (add-hook 'ocaml-mode-hook #'lsp)
+	 (add-hook 'tuareg-mode-hook #'lsp)
+	 (add-hook 'racket-mode-hook #'lsp)
+	 (setq lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error"))
+	 (setq lsp-signature-auto-activate nil)
+	 )
+       (define-key lsp-mode-map (kbd "C-x i") 'lsp-rename)
+       (define-key lsp-mode-map (kbd "C-c t .") 'lsp-ui-peek-find-definitions)
+       (define-key lsp-mode-map (kbd "C-c t /") 'lsp-ui-peek-find-references)
+       (define-key lsp-mode-map (kbd "C-c m q") 'lsp-format-region)
+       ;; Leet Code
+       (setq leetcode-prefer-language "cpp")
+       (setq leetcode-prefer-sql "mysql")
+       (setq leetcode-save-solutions t)
+       (setq leetcode-directory "~/repos/code/leet")
        )
       ((eq system-type 'gnu/linux)
        (global-undo-tree-mode 0)
        ))
+
 
