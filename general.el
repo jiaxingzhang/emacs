@@ -4,35 +4,24 @@
 ;; Package archives
 ;; Out of China, this is so far the best mirrors
 ;; Within China, we should replace these with TsingHua's mirrors
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                        ("marmalade" . "http://marmalade-repo.org/packages/")
-                        ("melpa" . "http://melpa.milkbox.net/packages/")))
-
-(setq backup-directory-alist `(("." . "~/.emacs_save")))
+;; Hack for using a different set of repositories when ELPA is down
 
 ;; always start as a server
-;; (server-start)
+;; (server-start) ;; no need to do this in MW environment
 
 ;; theme
-(cond ((eq system-type 'darwin)
-       (load-theme 'dracula t) 
-       (require 'powerline)       ;; this don't work well in Linux terminal
-       (powerline-default-theme)
-       )
-      ((eq system-type 'gnu/linux)
-;       (load-theme 'dracula t)
-       ))
+;; TODO (2021-05-19) - i haven't found a theme I really like yet
+;; (cond ((eq system-type 'darwin)
+;;        (load-theme 'dracula t)
+;;        )
+;;       ((eq system-type 'gnu/linux)
+;;        (load-theme 'monokai t)
+;;        ))
 
+;; FIXME (2021-05-19) - remove this?
 ;; icons
-(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
-(setq neo-theme (if (display-graphic-p) 'icons 'arrow))
-
-(global-set-key (kbd "C-c q") 'remember-notes)
-(global-set-key (kbd "C-c Q") 'remember-other-frame)
-
-;; neotree
-(require 'neotree)
-(global-set-key (kbd "C-x t") 'neotree-toggle)
+;; (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+;; (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
 
 ;; start up size
 (if (display-graphic-p)
@@ -64,25 +53,12 @@
 (defalias 'oo 'find-file-other-window)
 (setq eshell-scroll-to-bottom-on-input t)
 
-;; (setq explicit-shell-file-name "/usr/bin/fish")
-(require 'use-package)
-(use-package shell-pop
-  :bind (("C-t" . shell-pop))
-  :config
-  (setq shell-pop-shell-type (quote ("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
-  (setq shell-pop-term-shell "/usr/local/bin/fish")
-  ;; need to do this manually or not picked up by `shell-pop'
-  (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
-  (setq shell-pop-autocd-to-working-dir nil) ; don't auto-cd 
-  )
-
 ;; General Settings
 (setq version-control t)
 (setq kept-old-versions 2)
 (setq kept-new-versions 6)
 (setq delete-old-versions t)
 (setq backup-by-copying t)
-(setq debug-on-error t)
 (setq visible-bell 1)
 (setq ring-bell-function 'ignore)
 (setq read-buffer-completion-ignore-case t)
@@ -98,7 +74,7 @@
 (show-paren-mode t) ;; highlight the parenthesis
 (tool-bar-mode 0) ;; no tool bar
 (customize-set-variable 'scroll-bar-mode 'right)
-(global-linum-mode t)
+(global-linum-mode 1)
 (auto-image-file-mode t)
 (setq frame-title-format "%b")
 (global-set-key [(home)] 'beginning-of-buffer) ;; set home key to the beginning of buffer
@@ -125,22 +101,25 @@ scroll-conservatively 10000)
 (setq require-final-newline t)
 (setq track-eol t)
 (setq-default kill-whole-line t)
-(setq kill-ring-max 200)
+;; (setq kill-ring-max 200)
 (setq apropos-do-all t)
 (setq-default ispell-program-name "aspell")
 (savehist-mode 1)
 (put 'narrow-to-region 'disabled nil)
 ;; set the clipboard
-(setq x-select-enable-clipboard t)
+(setq select-enable-clipboard t)
 (if (eq system-type 'gnu-linux) (setq interprogram-paste-function 'x-cut-buffer-or-selection-value))
 (setq ansi-color-names-vector
       ["black" "tomato" "PaleGreen2" "gold1"
        "DeepSkyBlue1" "MediumOrchid1" "cyan" "white"])
-;;; (modern-c++-font-lock-global-mode t) ;; modern-c look and feel
-(global-set-key (kbd "C-c l") 'global-hl-line-mode) ;; toggle highlight the current line
 
+;; Coding 
+(defun cpplint ()
+ "call CPPLINT in curent buffer"
+ (interactive)
+ (flycheck-compile 'c/c++-googlelint) (other-window -1))
 
-;; mark ring size
+; mark ring size
 (setq mark-ring-max 99)
 (setq global-mark-ring-max 99)
 
@@ -169,11 +148,6 @@ try-expand-whole-kill))
 ;; 2 - Helm 
 ;; (require 'helm-config)
 ;; (require 'helm-ag)
-;; (global-set-key (kbd "C-x C-f") 'helm-find-files)
-;; (global-set-key (kbd "C-x b") 'helm-mini)
-;; (global-set-key (kbd "C-x C-r") 'helm-do-grep-ag)
-;; (global-set-key (kbd "C-x f") 'helm-ag-this-file)
-;; ;; ; (global-set-key (kbd "M-x") #'helm-M-x) ; a bit too much I think
 ;; (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to do persistent action
 ;; (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
 ;; (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
@@ -181,29 +155,24 @@ try-expand-whole-kill))
 ;; (global-set-key (kbd "C-c x") 'helm-mode)
 
 ;; ivy-mode as a replacement for helm
+;; I still like ivy in general 
 (ivy-mode 1)
-(setq ivy-use-virtual-buffers t)
-(setq ivy-height 20)
-(setq ivy-count-format "(%d/%d) ")
+
+;; (setq ivy-use-virtual-buffers t)
+;; (setq ivy-height 20)
+;; (setq ivy-count-format "(%d/%d) ")
+;; ;; (setq ivy-extra-directories ())
+(setq ivy-extra-directories  '("./"))
 (defun my-counsel-ag ()
   (interactive)
   (counsel-ag nil default-directory))
-(global-set-key (kbd "C-x C-y") 'my-counsel-ag)
-(global-set-key (kbd "C-x B") 'counsel-recentf)
 
-;; (global-set-key (kbd "C-x Y") 'counsel-yank-pop)
-
-(global-set-key (kbd "C-M-j") 'avy-goto-char-timer)
-(global-set-key (kbd "M-j") 'avy-goto-line)
 (defun ivy-icomplete (f &rest r)
   (icomplete-mode -1)
   (unwind-protect
        (apply f r)
     (icomplete-mode 1)))
 (advice-add 'ivy-read :around #'ivy-icomplete)
-;; (add-hook 'gud-gdb-mode-hook (lambda() (ivy-mode 0)))
-;; (add-hook 'c++-mode-hook (lambda() (ivy-mode 0)))
-(global-set-key (kbd "C-c a") 'ivy-mode)
 
 ;; 3 - TabNine: AI based completion
 ;; this requires clang to be installed:
@@ -228,18 +197,18 @@ try-expand-whole-kill))
       (put 'toggle-tabnine-state 'state t)
       (message "Tabnine is off")
       )))
-(global-set-key (kbd "C-c z") 'toggle-tabnine)
-
 
 ;; 
 ;; Other utils
 ;;
 
 ;; search string in all opened buffers (C-x g). I know that string is in my Emacs somewhere! 
-(require 'cl)
+;; FIXME (2021-05-19) - remove this?
+;; (require 'cl)
 (defcustom search-all-buffers-ignored-files (list (rx-to-string '(and bos (or ".bash_history" "TAGS") eos)))
   "Files to ignore when searching buffers via \\[search-all-buffers]."
   :type 'editable-list)
+
 (require 'grep)
 (defun search-all-buffers (regexp prefix)
   "Searches file-visiting buffers for occurence of REGEXP.  With
@@ -255,9 +224,6 @@ searches all buffers."
       (lambda (b) (some (lambda (rx) (string-match rx  (file-name-nondirectory (buffer-file-name b)))) search-all-buffers-ignored-files))
       (remove-if-not 'buffer-file-name (buffer-list))))
    regexp))
-(global-set-key (kbd "C-x g") 'search-all-buffers)
-;; (global-set-key (kbd "C-*") 'evil-search-word-forward)
-;; (global-set-key (kbd "C-#") 'evil-search-word-backward)
 
 (defun my-put-file-name-on-clipboard ()
   "Put the current file name on the clipboard"
@@ -268,42 +234,354 @@ searches all buffers."
     (when filename
       (with-temp-buffer
         (insert filename)
-        (clipboard-kill-region (point-min) (point-max)))
+        (clipboard-kill-region (point-min) (point-max))
+        )
       (message filename))))
-(global-set-key (kbd "C-x y") 'my-put-file-name-on-clipboard)
 
 ;; Anzu
-
 (require 'anzu)
 (global-anzu-mode +1)
 (set-face-attribute 'anzu-mode-line nil
                     :foreground "yellow" :weight 'bold)
+
 (custom-set-variables
  '(anzu-mode-lighter "")
  '(anzu-deactivate-region t)
  '(anzu-search-threshold 1000)
  '(anzu-replace-threshold 50)
  '(anzu-replace-to-string-separator " => "))
-(global-set-key (kbd "C-x r") 'anzu-query-replace-at-cursor-thing)
 
-;; (require 'mermaid-mode)
-;; (add-to-list 'auto-mode-alist '("\\.mmd\\'" . mermaid-mode))
+;; FIXME (2021-05-19) - remove this?
+;; ;; Origami folding
+;; (require 'origami)
+;; (global-origami-mode t)
 
-;; Origami folding
-(require 'origami)
-(global-origami-mode t)
+;; (global-set-key (kbd "C-c f f") 'origami-close-node)
+;; (global-set-key (kbd "C-c f o") 'origami-open-node)
+;; (global-set-key (kbd "C-c f g") 'origami-close-node-recursively)
+;; (global-set-key (kbd "C-c f p") 'origami-open-node-recursively)
+;; (global-set-key (kbd "C-c f A") 'origami-open-all-nodes)
+;; (global-set-key (kbd "C-c f a") 'origami-close-all-nodes)
+;; (load-file "~/.emacs.rc/modeline.el")
 
-(global-set-key (kbd "C-c f f") 'origami-close-node)
-(global-set-key (kbd "C-c f o") 'origami-open-node)
-(global-set-key (kbd "C-c f g") 'origami-close-node-recursively)
-(global-set-key (kbd "C-c f p") 'origami-open-node-recursively)
-(global-set-key (kbd "C-c f A") 'origami-open-all-nodes)
-(global-set-key (kbd "C-c f a") 'origami-close-all-nodes)
 
+
+;; FIXME (2021-05-19) - remove this?
+;; (load-file "/home/jzhang/.emacs.rc/local/ace-jump-mode.el")
+;; ;;
+;; ;; ace jump mode major function
+;; ;; 
+;; (autoload
+;;   'ace-jump-mode
+;;   "ace-jump-mode"
+;;   "Emacs quick move minor mode"
+;;   t)
+;; ;; you can select the key you prefer to
+;; (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+
+;; 
+;; enable a more powerful jump back function from ace jump mode
+;;
+
+;; FIXME (2021-05-19) - remove this?
+;; (autoload
+;;   'ace-jump-mode-pop-mark
+;;   "ace-jump-mode"
+;;   "Ace jump back:-)"
+;;   t)
+;; (eval-after-load "ace-jump-mode"
+;;   '(ace-jump-mode-enable-mark-sync))
+(define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
+
+;; FIXME (2021-05-19) - remove this?
+;; (load-file "/home/jzhang/.emacs.rc/local/find-file-in-project.el")
+;; (require 'find-file-in-project)
+
+;; FIXME (2021-05-19) - comment?
+(electric-pair-mode 1)
+
+;; so that in mouse works in termial
+(xclip-mode 1)
 (xterm-mouse-mode 1)
 
-;; (add-to-list 'semantic-default-submodes 'global-semantic-stickyfunc-mode)
-;; (semantic-mode 1)
-;; (require 'stickyfunc-enhance)
+;; smart model line
+(sml/setup)
 
-(load-file "~/.emacs.rc/modeline.el")
+;; FIXME (2021-05-19) - comment?
+(require 'expand-region)
+
+;; FIXME (2021-05-19) - remove this?
+;; (load-file "/home/jzhang/.emacs.rc/local/auto-mark.el")
+;; (when (require 'auto-mark nil t)
+;;   (setq auto-mark-command-class-alist
+;;         '((anything . anything)
+;;           (goto-line . jump)
+;;           (indent-for-tab-command . ignore)
+;;           (undo . ignore)))
+;;   (setq auto-mark-command-classifiers
+;;         (list (lambda (command)
+;;                 (if (and (eq command 'self-insert-command)
+;;                          (eq last-command-char ? ))
+;;                     'ignore))))
+;;   (global-auto-mark-mode 1))
+
+(load-file "~/.emacs.rc/local/dot-mode.el")
+(require 'dot-mode)
+;; FIXME (2021-05-19) - remove this?
+;; (add-hook 'find-file-hooks 'dot-mode-on)
+
+(defun rename-current-buffer-file ()
+  "Renames current buffer and file it is visiting."
+  (interactive)
+  (let* ((name (buffer-name))
+        (filename (buffer-file-name))
+        (basename (file-name-nondirectory filename)))
+    (if (not (and filename (file-exists-p filename)))
+        (error "Buffer '%s' is not visiting a file!" name)
+      (let ((new-name (read-file-name "New name: " (file-name-directory filename) basename nil basename)))
+        (if (get-buffer new-name)
+            (error "A buffer named '%s' already exists!" new-name)
+          (rename-file filename new-name 1)
+          (rename-buffer new-name)
+          (set-visited-file-name new-name)
+          (set-buffer-modified-p nil)
+          (message "File '%s' successfully renamed to '%s'"
+                   name (file-name-nondirectory new-name)))))))
+
+(defun er-delete-file-and-buffer ()
+  "Kill the current buffer and deletes the file it is visiting."
+  (interactive)
+  (let ((filename (buffer-file-name)))
+    (when filename
+      (if (vc-backend filename)
+          (vc-delete-file filename)
+        (progn
+          (delete-file filename)
+          (message "Deleted file %s" filename)
+          (kill-buffer))))))
+
+;; store all backup and autosave files in the tmp dir
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
+
+;; FIXME (2021-05-19) - clean up the following into use-package
+(flycheck-mode 1)
+(eval-after-load 'flycheck
+  '(progn
+     (require 'flycheck-google-cpplint)
+     ;; Add Google C++ Style checker.
+     ;; In default, syntax checked by Clang and Cppcheck.
+     (flycheck-add-next-checker 'c/c++-clang
+                                'c/c++-googlelint 'append)))
+(use-package flycheck-indicator
+  :hook (flycheck-mode . flycheck-indicator-mode))
+(custom-set-variables
+   '(flycheck-googlelint-verbose "3")
+   '(flycheck-googlelint-filter "-whitespace,+whitespace/braces"))
+
+;; FIXME (2021-05-19) - comment?
+(global-highlight-parentheses-mode)
+
+;; restore the layouts after ediff
+(when (fboundp 'winner-mode) (winner-mode 1))
+(defvar my-ediff-last-windows nil)
+(defun my-store-pre-ediff-winconfig ()
+  (setq my-ediff-last-windows (current-window-configuration)))
+(defun my-restore-pre-ediff-winconfig ()
+  (set-window-configuration my-ediff-last-windows))
+
+(require 'iflipb)
+;; (defun my-iflipb-buffer-list ()
+;;   "Returns list of buffers whose major-mode is the same as current buffer's one."
+;;   (let ((cur-buf-list (buffer-list (selected-frame)))
+;;         (same-major-mode-buflist nil)
+;;         (currbuf-major-mode
+;;          (buffer-local-value 'major-mode (current-buffer))))
+;;      (dolist (buffer cur-buf-list)
+;;       (if (eq (buffer-local-value 'major-mode buffer) currbuf-major-mode)
+;;           (add-to-list 'same-major-mode-buflist buffer)))
+;;      (nreverse same-major-mode-buflist)))
+;;(setq iflipb-buffer-list-function 'my-iflipb-buffer-list)
+(setq iflipb-wrap-around t)
+
+(defun window-toggle-split-direction ()
+  "Switch window split from horizontally to vertically, or vice versa.
+i.e. change right window to bottom, or change bottom window to right."
+  (interactive)
+  (require 'windmove)
+  (let ((done))
+    (dolist (dirs '((right . down) (down . right)))
+      (unless done
+        (let* ((win (selected-window))
+               (nextdir (car dirs))
+               (neighbour-dir (cdr dirs))
+               (next-win (windmove-find-other-window nextdir win))
+               (neighbour1 (windmove-find-other-window neighbour-dir win))
+               (neighbour2 (if next-win (with-selected-window next-win
+                                          (windmove-find-other-window neighbour-dir next-win)))))
+          (setq done (and (eq neighbour1 neighbour2)
+                          (not (eq (minibuffer-window) next-win))))
+          (if done
+              (let* ((other-buf (window-buffer next-win)))
+                (delete-window next-win)
+                (if (eq nextdir 'right)
+                    (split-window-vertically)
+                  (split-window-horizontally))
+                (set-window-buffer (windmove-find-other-window neighbour-dir) other-buf))))))))
+
+;; cycle windows backwards
+(defun prev-window ()
+   (interactive)
+   (other-window -1))
+
+(defun switch-to-previous-buffer-in-a-different-window ()
+  (interactive)
+  (let* ((otherbuf (other-buffer (current-buffer) t))
+     (otherwin (get-buffer-window otherbuf)))
+(if otherwin
+    (select-window otherwin)
+  (message "Last buffer (%s) is not currently visible" (buffer-name otherbuf)))))
+
+(require 'window-number)
+(window-number-mode)
+(window-number-meta-mode)
+
+;; set evil default state to emacs
+(setq evil-default-state 'emacs)
+
+(defun insert-current-date () (interactive)
+       (insert (shell-command-to-string "echo -n $(date +%Y-%m-%d)")))
+
+;;
+;; Key Bindings
+;; 
+(global-set-key (kbd "C-c q") 'remember-notes)
+(global-set-key (kbd "C-c Q") 'remember-other-frame)
+
+(global-set-key (kbd "C-c l") 'global-hl-line-mode) ;; toggle highlight the current line
+(global-set-key (kbd "C-c b") 'global-hl-block-mode) ;; toggle highlight the current block
+
+(global-set-key (kbd "C-c m l") 'cpplint)
+
+;; (global-set-key (kbd "C-x C-f") 'helm-find-files)
+;; (global-set-key (kbd "C-x b") 'helm-mini)
+;; (global-set-key (kbd "C-x C-r") 'helm-do-grep-ag)
+;; (global-set-key (kbd "C-x f") 'helm-ag-this-file)
+;; (global-set-key (kbd "M-x") #'helm-M-x) ; a bit too much I think
+
+(global-set-key (kbd "C-x C-y") 'my-counsel-ag)
+(global-set-key (kbd "C-x B") 'counsel-recentf)
+(global-set-key (kbd "M-l") 'counsel-mark-ring)
+(setq enable-recursive-minibuffers t)
+(global-set-key (kbd "M-s") 'swiper)
+(global-set-key (kbd "C-c C-r") 'ivy-resume)
+(global-set-key (kbd "C-x Y") 'counsel-yank-pop)
+
+(global-set-key (kbd "M-k") 'avy-goto-char-timer)
+(global-set-key (kbd "M-j") 'avy-goto-line)
+
+;; (global-set-key (kbd "C-c a") 'ivy-mode)
+
+(global-set-key (kbd "C-c z") 'toggle-tabnine)
+
+(global-set-key (kbd "C-x g") 'search-all-buffers)
+
+(global-set-key (kbd "C-x y") 'my-put-file-name-on-clipboard)
+
+(global-set-key (kbd "C-x i") 'anzu-query-replace-at-cursor-thing)
+
+(global-set-key (kbd "C-=") 'er/expand-region)
+
+;; quite nice to mimic dot in vim
+(global-set-key (kbd "M-.") 'dot-mode-execute)
+
+;; FIXME (2021-05-19) Is this really needed?
+(global-set-key (kbd "C-c t i") 'counsel-imenu)
+
+(global-set-key (kbd "C-x C-a C-h") 'winner-undo)
+(global-set-key (kbd "C-x C-a C-l") 'winner-redo)
+
+(global-set-key (kbd "M-o") 'iflipb-next-buffer)
+(global-set-key (kbd "M-i") 'iflipb-previous-buffer)
+
+(global-set-key (kbd "C-z") 'sb-toggle-evil-mode)
+
+(global-set-key (kbd "C-x |") 'window-toggle-split-direction)
+
+(define-key global-map (kbd "C-x p") 'prev-window)
+
+(global-set-key [?\C-x ?l] 'switch-to-previous-buffer-in-a-different-window)
+
+;;
+;; Use-package
+;;
+;; I like centaur tab over my own
+(require 'use-package)
+(use-package centaur-tabs
+  :demand
+  :config
+  (centaur-tabs-mode t)
+  :bind
+  ("M-{" . centaur-tabs-backward)
+  ("M-}" . centaur-tabs-forward))
+
+(use-package shell-pop
+  :bind (("C-t" . shell-pop))
+  :config
+  ;; FIXME (2021-05-19) - comment?
+  ;; (setq shell-pop-shell-type (quote ("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
+  ;; (setq shell-pop-term-shell "/usr/local/bin/fish")
+  (setq shell-pop-shell-type (quote ("eshell" "*eshell*" (lambda nil (eshell shell-pop-term-shell)))))  
+  ;; need to do this manually or not picked up by `shell-pop'
+  (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
+  (setq shell-pop-autocd-to-working-dir nil) ; don't auto-cd 
+  )
+
+;; sbtools turn this on by default?
+(global-undo-tree-mode 0)
+
+;;
+;; Experimental
+;;
+(use-package org-bullets
+:ensure t
+:init
+(setq org-bullets-bullet-list
+'("◉" "◎" "⚫" "○" "►" "◇"))
+:config
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+(setq org-todo-keywords '((sequence "☛ TODO(t)" "|" "✔ DONE(d)")
+(sequence "⚑ WAITING(w)" "|")
+(sequence "|" "✘ CANCELED(c)")))
+)
+
+(setq org-hide-emphasis-markers t)                            
+(setq org-emphasis-alist   
+(quote (("*" bold)
+("/" italic)
+("_" underline)
+("=" (:foreground "yellow" :background "black"))
+("~" org-verbatim verbatim)
+("+"
+(:strike-through t))
+)))
+
+(use-package org-roam
+      :ensure t
+      :hook
+      (after-init . org-roam-mode)
+      :custom
+      (org-roam-directory (file-truename "~/repos/roam/"))
+      :bind (:map org-roam-mode-map
+              (("C-c n l" . org-roam)
+               ("C-c n f" . org-roam-find-file)
+               ("C-c n g" . org-roam-graph))
+              :map org-mode-map
+              (("C-c n i" . org-roam-insert))
+              (("C-c n I" . org-roam-insert-immediate))))
+
+(setq org-agenda-files (list "~/repos/roam/org/work.org"
+                             "~/repos/roam/org/home.org"))

@@ -35,6 +35,7 @@
 (custom-set-variables
  '(tabbar-separator (quote (0.5))))
 ;; adding spaces
+
 (defun tabbar-buffer-tab-label (tab)
   "Return a label for TAB.
 That is, a string used to represent it on the tab bar."
@@ -85,3 +86,4 @@ Emacs buffer are those starting with “*”."
 ;(setq tabbar-ruler-popup-toolbar t)    ; get popup toolbar
 (setq tabbar-ruler-popup-scrollbar t)  ; show scroll-bar on mouse-move
 (require 'tabbar-ruler)
+
