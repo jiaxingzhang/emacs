@@ -305,6 +305,7 @@ searches all buffers."
 (xterm-mouse-mode 1)
 
 ;; smart model line
+(setq sml/no-confirm-load-theme t)
 (sml/setup)
 
 ;; FIXME (2021-05-19) - comment?
@@ -541,7 +542,11 @@ i.e. change right window to bottom, or change bottom window to right."
   )
 
 ;; sbtools turn this on by default?
-(global-undo-tree-mode 0)
+(cond ((eq system-type 'darwin)
+       )
+      ((eq system-type 'gnu/linux)
+       (global-undo-tree-mode 0)
+       ))
 
 ;;
 ;; Experimental
