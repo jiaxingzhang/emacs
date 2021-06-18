@@ -146,9 +146,9 @@ try-expand-whole-kill))
 
 ;; helm seems to interfere with gdb-gud mode? 
 ;; 2 - Helm 
-;; (require 'helm-config)
-;; (require 'helm-ag)
-;; (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to do persistent action
+(require 'helm-config)
+(require 'helm-ag)
+(define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to do persistent action
 ;; (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
 ;; (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
 ;; (helm-mode 0)
@@ -362,11 +362,8 @@ searches all buffers."
           (kill-buffer))))))
 
 ;; store all backup and autosave files in the tmp dir
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-
 (setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
+  `((".*" "~/.emacs-save/" t)))
 
 ;; FIXME (2021-05-19) - clean up the following into use-package
 (flycheck-mode 1)
@@ -467,8 +464,8 @@ i.e. change right window to bottom, or change bottom window to right."
 
 (global-set-key (kbd "C-c m l") 'cpplint)
 
-;; (global-set-key (kbd "C-x C-f") 'helm-find-files)
-;; (global-set-key (kbd "C-x b") 'helm-mini)
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
+(global-set-key (kbd "C-x b") 'helm-mini)
 ;; (global-set-key (kbd "C-x C-r") 'helm-do-grep-ag)
 ;; (global-set-key (kbd "C-x f") 'helm-ag-this-file)
 ;; (global-set-key (kbd "M-x") #'helm-M-x) ; a bit too much I think
@@ -557,7 +554,7 @@ i.e. change right window to bottom, or change bottom window to right."
 	 (add-hook 'ocaml-mode-hook #'lsp)
 	 (add-hook 'tuareg-mode-hook #'lsp)
 	 (add-hook 'racket-mode-hook #'lsp)
-	 (setq lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error"))
+;;	 (setq lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error"))
 	 (setq lsp-signature-auto-activate nil)
 	 )
        (define-key lsp-mode-map (kbd "C-x i") 'lsp-rename)
@@ -605,3 +602,12 @@ i.e. change right window to bottom, or change bottom window to right."
 ;; (global-set-key (kbd "C-w") 'cut-wrapper)
 
 ;; (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+
+(require 'powerline)
+
+;; These two lines are just examples
+(setq powerline-arrow-shape 'curve)
+(setq powerline-default-separator-dir '(right . left))
+;; These two lines you really need.
+(setq sml/theme 'light-powerline)
+(sml/setup)
