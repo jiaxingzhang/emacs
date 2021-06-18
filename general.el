@@ -574,4 +574,34 @@ i.e. change right window to bottom, or change bottom window to right."
        (global-undo-tree-mode 0)
        ))
 
+(defun write-region-to-client-clipboard (beg end)
+  (interactive "r")
+  (copy-region-as-kill beg end)
+  (shell-command-on-region beg end "ssh jzhang@ah-jzhang-maci pbcopy" nil nil nil t)
+  (sb-copy-to-clipboard)
+  )
+(global-set-key (kbd "M-w") 'write-region-to-client-clipboard)
 
+(defun write-region-to-client-clipboard-search (beg end)
+  (interactive "r")
+  (copy-region-as-kill beg end)
+  (shell-command-on-region beg end "ssh jzhang@ah-jzhang-maci codesearch" nil nil nil t))
+(global-set-key (kbd "C-x C-q") 'write-region-to-client-clipboard-search)
+
+;; strange behavior on iTerm
+(if (not (display-graphic-p))
+    (progn
+      (global-set-key (kbd "M-SPC") 'mark-sexp)
+      (set-face-attribute 'linum nil :background "color-251")
+      )
+  ) 
+
+;; (defun cut-wrapper (begin end)
+;;   (interactive "r")
+;;   (progn   (kill-region begin end)
+;;            (sb-cut-to-clipboard))
+
+;;   )
+;; (global-set-key (kbd "C-w") 'cut-wrapper)
+
+;; (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
