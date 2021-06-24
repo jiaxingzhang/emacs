@@ -577,13 +577,19 @@ i.e. change right window to bottom, or change bottom window to right."
   (shell-command-on-region beg end "ssh jzhang@ah-jzhang-maci pbcopy" nil nil nil t)
   (sb-copy-to-clipboard)
   )
-(global-set-key (kbd "M-w") 'write-region-to-client-clipboard)
+
+(cond ((eq system-name 'ah-jzhang-maci)
+       (global-set-key (kbd "C-x C-q") 'write-region-to-client-clipboard-search)
+       (global-set-key (kbd "M-w") 'write-region-to-client-clipboard)
+       )
+      ((eq system-type 'gnu/linux)
+       ))
+
 
 (defun write-region-to-client-clipboard-search (beg end)
   (interactive "r")
   (copy-region-as-kill beg end)
   (shell-command-on-region beg end "ssh jzhang@ah-jzhang-maci codesearch" nil nil nil t))
-(global-set-key (kbd "C-x C-q") 'write-region-to-client-clipboard-search)
 
 ;; strange behavior on iTerm
 (if (not (display-graphic-p))
@@ -611,3 +617,5 @@ i.e. change right window to bottom, or change bottom window to right."
 ;; These two lines you really need.
 (setq sml/theme 'light-powerline)
 (sml/setup)
+
+(yas-global-mode 1)
