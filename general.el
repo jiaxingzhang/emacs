@@ -363,7 +363,21 @@ searches all buffers."
 
 ;; store all backup and autosave files in the tmp dir
 (setq auto-save-file-name-transforms
-  `((".*" "~/.emacs-save/" t)))
+      `((".*" "~/.emacs-save/" t)))
+
+(setq backup-directory-alist '(("" . "~/.emacs.d/backup")))
+
+;; (setq create-lockfiles nil)
+
+(let ((my-auto-save-dir (locate-user-emacs-file "auto-save")))
+  (setq auto-save-file-name-transforms
+        `((".*" ,(expand-file-name "\\2" my-auto-save-dir) t)))
+  (unless (file-exists-p my-auto-save-dir)
+    (make-directory my-auto-save-dir)))
+(setq auto-save-default t
+      auto-save-timeout 10
+      auto-save-interval 200)
+
 
 ;; FIXME (2021-05-19) - clean up the following into use-package
 (flycheck-mode 1)
@@ -448,7 +462,7 @@ i.e. change right window to bottom, or change bottom window to right."
 (window-number-meta-mode)
 
 ;; set evil default state to emacs
-(setq evil-default-state 'emacs)
+;; (setq evil-default-state 'emacs)
 
 (defun insert-current-date () (interactive)
        (insert (shell-command-to-string "echo -n $(date +%Y-%m-%d)")))
@@ -505,7 +519,7 @@ i.e. change right window to bottom, or change bottom window to right."
 (global-set-key (kbd "M-o") 'iflipb-next-buffer)
 (global-set-key (kbd "M-i") 'iflipb-previous-buffer)
 
-(global-set-key (kbd "C-z") 'sb-toggle-evil-mode)
+;; (global-set-key (kbd "C-z") 'sb-toggle-evil-mode)
 
 (global-set-key (kbd "C-x |") 'window-toggle-split-direction)
 
@@ -530,9 +544,9 @@ i.e. change right window to bottom, or change bottom window to right."
   :bind (("C-t" . shell-pop))
   :config
   ;; FIXME (2021-05-19) - comment?
-  ;; (setq shell-pop-shell-type (quote ("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
-  ;; (setq shell-pop-term-shell "/usr/local/bin/fish")
-  (setq shell-pop-shell-type (quote ("eshell" "*eshell*" (lambda nil (eshell shell-pop-term-shell)))))  
+  (setq shell-pop-shell-type (quote ("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
+  (setq shell-pop-term-shell "/usr/local/bin/fish")
+  ;; (setq shell-pop-shell-type (quote ("eshell" "*eshell*" (lambda nil (eshell shell-pop-term-shell)))))  
   ;; need to do this manually or not picked up by `shell-pop'
   (shell-pop--set-shell-type 'shell-pop-shell-type shell-pop-shell-type)
   (setq shell-pop-autocd-to-working-dir nil) ; don't auto-cd 
