@@ -178,7 +178,9 @@ try-expand-whole-kill))
 ;; this requires clang to be installed:
 ;; sudo apt-get install clang-7 lldb-7 lld-7 --fix-missing
 ;; sudo ln -s /usr/bin/clang-7 /usr/bin/clang
-(require 'company-tabnine)
+
+;; (require 'company-tabnine)
+
 (setq company-idle-delay 0) ;; Trigger completion immediately.
 (setq company-show-numbers t) ;; Number the candidates (use M-1, M-2 etc to select completions).
 (add-hook 'gud-gdb-mode-hook (lambda() (company-mode 0))) ;; Do not use company-mode in gud-gdb mode
@@ -305,11 +307,13 @@ searches all buffers."
 (xterm-mouse-mode 1)
 
 ;; smart model line
+;; These two lines you really need.
 (setq sml/no-confirm-load-theme t)
+(setq sml/theme 'light-powerline)
 (sml/setup)
 
 ;; FIXME (2021-05-19) - comment?
-(require 'expand-region)
+;; (require 'expand-region)
 
 ;; FIXME (2021-05-19) - remove this?
 ;; (load-file "/home/jzhang/.emacs.rc/local/auto-mark.el")
@@ -395,7 +399,7 @@ searches all buffers."
    '(flycheck-googlelint-filter "-whitespace,+whitespace/braces"))
 
 ;; FIXME (2021-05-19) - comment?
-(global-highlight-parentheses-mode)
+;; (global-highlight-parentheses-mode)
 
 ;; restore the layouts after ediff
 (when (fboundp 'winner-mode) (winner-mode 1))
@@ -488,7 +492,7 @@ i.e. change right window to bottom, or change bottom window to right."
 (global-set-key (kbd "C-x B") 'counsel-recentf)
 (global-set-key (kbd "M-l") 'counsel-mark-ring)
 (setq enable-recursive-minibuffers t)
-(global-set-key (kbd "M-s") 'swiper)
+;; (global-set-key (kbd "M-s") 'swiper)
 (global-set-key (kbd "C-c C-r") 'ivy-resume)
 (global-set-key (kbd "C-x Y") 'counsel-yank-pop)
 
@@ -628,8 +632,66 @@ i.e. change right window to bottom, or change bottom window to right."
 ;; These two lines are just examples
 (setq powerline-arrow-shape 'curve)
 (setq powerline-default-separator-dir '(right . left))
-;; These two lines you really need.
-(setq sml/theme 'light-powerline)
-(sml/setup)
 
-(yas-global-mode 1)
+;; for Google's dev
+
+(global-set-key (kbd "C-x C-o") 'ff-find-other-file)
+(add-hook 'after-init-hook 'global-company-mode)
+
+;;;; colorize output in compile buffer
+(require 'ansi-color)
+(defun colorize-compilation-buffer ()
+  (ansi-color-apply-on-region compilation-filter-start (point)))
+(add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+
+(setq cs-program "cs --color=never")
+
+;; fish shell prompt
+(add-to-list 'comint-output-filter-functions 'ansi-color-process-output)
+(ansi-color-for-comint-mode-on)
+
+;; copy text from emacs via ssh to host
+(use-package clipetty
+  :ensure t
+  :hook (after-init . global-clipetty-mode))
+
+(use-package clipetty
+  :ensure t
+  :bind ("M-w" . clipetty-kill-ring-save))
+
+(defun my-re-search-forward (&optional word)
+  "Searches for the last copied solitary WORD, unless WORD is given. "
+  (interactive)
+  (let ((word (or word (car kill-ring))))
+    (re-search-forward (concat "\\_<" word "\\_>") nil t 1)
+    (set-mark (point))
+    (goto-char (match-beginning 0))
+    (exchange-point-and-mark)))
+
+;; old style keybinding
+(global-set-key (kbd "C-c t .") 'xref-find-definitions)
+(global-set-key (kbd "C-c t /") 'xref-find-references)
+(global-set-key (kbd "C-c m c") 'google3-build)
+(global-set-key (kbd "C-c m d") 'gud-gdb)
+(global-set-key (kbd "C-c m q") 'indent-region)
+(global-set-key (kbd "C-c p .") 'fig-status)
+
+;; version of ivy-yank-word to yank from start of word
+(defun bjm/ivy-yank-whole-word ()
+  "Pull next word from buffer into search string."
+  (interactive)
+  (let (amend)
+    (with-ivy-window
+      ;;move to last word boundary
+      (re-search-backward "\\b")
+      (let ((pt (point))
+            (le (line-end-position)))
+        (forward-word 1)
+        (if (> (point) le)
+            (goto-char pt)
+          (setq amend (buffer-substring-no-properties pt (point))))))
+    (when amend
+      (insert (replace-regexp-in-string "  +" " " amend)))))
+
+;; bind it to M-j
+(define-key ivy-minibuffer-map (kbd "M-j") 'bjm/ivy-yank-whole-word)
